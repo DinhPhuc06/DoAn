@@ -2,25 +2,26 @@
 
 namespace App\Controllers_Admin;
 
-use App\Models\RoomType;
+use App\Service\AdminRoomTypeService;
 
 /**
- * Admin CRUD Loại phòng (room_types). Điều phối request, dữ liệu ở Model.
+ * Admin CRUD Loại phòng (room_types).
+ * Controller chỉ điều phối; logic CRUD/validate nằm trong Service.
  */
 class AdminRoomTypeController extends AdminBaseController
 {
-    private RoomType $model;
+    private AdminRoomTypeService $roomTypeService;
 
     public function __construct()
     {
         parent::__construct();
-        $this->model = new RoomType();
+        $this->roomTypeService = new AdminRoomTypeService();
     }
 
     /** GET: Danh sách */
     public function index(): void
     {
-        $items = $this->model->getAll();
+        $items = $this->roomTypeService->listRoomTypes();
         $this->render('Room_Types/index', ['items' => $items]);
     }
 
@@ -37,19 +38,23 @@ class AdminRoomTypeController extends AdminBaseController
             $this->redirect('admin.php?page=room-type');
             return;
         }
-        $data = [
+        $result = $this->roomTypeService->createFromRequest([
             'name'       => $this->input('name'),
-            'capacity'   => (int) $this->input('capacity'),
-            'base_price' => $this->input('base_price') !== '' ? (float) $this->input('base_price') : null,
-        ];
-        $id = $this->model->create($data);
-        $this->redirect($id ? '/admin.php?page=room-type&message=created' : '/admin.php?page=room-type&action=create&error=1');
+            'capacity'   => $this->input('capacity'),
+            'base_price' => $this->input('base_price'),
+        ]);
+
+        $this->redirect(
+            $result['success']
+                ? '/admin.php?page=room-type&message=created'
+                : '/admin.php?page=room-type&action=create&error=1'
+        );
     }
 
     /** GET: Form sửa */
     public function edit(int $id): void
     {
-        $item = $this->model->findById($id);
+        $item = $this->roomTypeService->findRoomType($id);
         if (!$item) {
             $this->redirect('admin.php?page=room-type');
             return;
@@ -64,24 +69,23 @@ class AdminRoomTypeController extends AdminBaseController
             $this->redirect('admin.php?page=room-type&action=edit&id=' . $id);
             return;
         }
-        $item = $this->model->findById($id);
-        if (!$item) {
-            $this->redirect('admin.php?page=room-type');
-            return;
-        }
-        $data = [
+        $result = $this->roomTypeService->updateFromRequest($id, [
             'name'       => $this->input('name'),
-            'capacity'   => (int) $this->input('capacity'),
-            'base_price' => $this->input('base_price') !== '' ? (float) $this->input('base_price') : null,
-        ];
-        $ok = $this->model->update($id, $data);
-        $this->redirect($ok ? '/admin.php?page=room-type&message=updated' : '/admin.php?page=room-type&action=edit&id=' . $id . '&error=1');
+            'capacity'   => $this->input('capacity'),
+            'base_price' => $this->input('base_price'),
+        ]);
+
+        $this->redirect(
+            $result['success']
+                ? '/admin.php?page=room-type&message=updated'
+                : '/admin.php?page=room-type&action=edit&id=' . $id . '&error=1'
+        );
     }
 
     /** Xóa */
     public function delete(int $id): void
     {
-        $this->model->delete($id);
+        $this->roomTypeService->deleteRoomType($id);
         $this->redirect('admin.php?page=room-type&message=deleted');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Core\BookingStatus;
+use App\Core\Database;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\Service;
@@ -15,12 +16,14 @@ class RoomService
     private RoomType $roomTypeModel;
     private Room $roomModel;
     private Service $serviceModel;
+    private \PDO $pdo;
 
     public function __construct()
     {
         $this->roomTypeModel = new RoomType();
         $this->roomModel = new Room();
         $this->serviceModel = new Service();
+        $this->pdo = Database::getInstance()->getConnection();
     }
 
     /** Xem loại phòng + addon services */
@@ -87,7 +90,7 @@ class RoomService
             } elseif ($checkIn['db'] >= $checkOut['db']) {
                 $error = 'dates';
             } else {
-                $rooms = $this->roomModel->getAvailableInRange($checkIn['db'], $checkOut['db'], $roomTypeId);
+                $rooms = $this->getAvailableInRange($checkIn['db'], $checkOut['db'], $roomTypeId);
             }
         }
 
@@ -99,5 +102,36 @@ class RoomService
             'roomTypeId' => $roomTypeId,
             'error'      => $error,
         ];
+    }
+
+    /**
+     * Core tìm phòng trống theo khoảng thời gian + loại phòng.
+     * Được tách ra khỏi Model để model chỉ CRUD dữ liệu.
+     */
+    private function getAvailableInRange(string $check_in, string $check_out, ?int $room_type_id = null): array
+    {
+        $blockStatuses = BookingStatus::statusesThatBlockRoom();
+        $placeholders = implode(',', array_fill(0, count($blockStatuses), '?'));
+        $sql = "
+            SELECT r.*, rt.name AS room_type_name, rt.capacity, rt.base_price
+            FROM `room_details` r
+            INNER JOIN `room_types` rt ON rt.id = r.room_type_id
+            WHERE r.id NOT IN (
+                SELECT bd.room_id
+                FROM `bookings` b
+                JOIN `booking_details` bd ON b.id = bd.booking_id
+                WHERE b.status IN ($placeholders)
+                AND NOT (b.check_out <= ? OR b.check_in >= ?)
+            )
+        ";
+        $bind = array_merge($blockStatuses, [$check_in, $check_out]);
+        if ($room_type_id !== null) {
+            $sql .= " AND r.room_type_id = ?";
+            $bind[] = $room_type_id;
+        }
+        $sql .= " ORDER BY rt.base_price ASC, r.room_number ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($bind);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
     }
 }

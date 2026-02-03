@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Core\Database;
 use App\Core\BookingStatus;
+use App\Core\BookingException;
 use App\Models\Booking;
 use App\Models\BookingDetail;
 use App\Models\Room;
@@ -104,22 +105,37 @@ class BookingService
     }
 
 
+    /**
+     * Validate input tạo booking.
+     * Thành công: trả về payload chuẩn hoá.
+     * Lỗi: ném BookingException với errorCode chuẩn ('missing', 'dates', 'unauthorized', 'room_not_found').
+     *
+     * @return array{
+     *   user_id:int,
+     *   room_id:int,
+     *   check_in:string,
+     *   check_out:string,
+     *   total_price:float,
+     *   check_in_local:string,
+     *   check_out_local:string
+     * }
+     */
     public function validateCreateInput(int $user_id, int $room_id, string $check_in, string $check_out): array
     {
         $in = $this->parseDateTimeInput($check_in);
         $out = $this->parseDateTimeInput($check_out);
         if (!$in['ok'] || !$out['ok']) {
-            return ['valid' => false, 'error' => 'missing', 'data' => []];
+            throw new BookingException('missing', 'Missing or invalid datetime input');
         }
         if ($in['db'] >= $out['db']) {
-            return ['valid' => false, 'error' => 'dates', 'data' => []];
+            throw new BookingException('dates', 'Check-in must be before check-out');
         }
         if ($user_id <= 0) {
-            return ['valid' => false, 'error' => 'unauthorized', 'data' => []];
+            throw new BookingException('unauthorized', 'User must be logged in to create booking');
         }
         $room = $this->roomModel->findById($room_id);
         if (!$room) {
-            return ['valid' => false, 'error' => 'room_not_found', 'data' => []];
+            throw new BookingException('room_not_found', 'Room not found');
         }
         $roomType = $this->roomTypeModel->findById($room['room_type_id'] ?? 0);
         $basePrice = isset($roomType['base_price']) ? (float) $roomType['base_price'] : 0;
@@ -127,39 +143,33 @@ class BookingService
         $nights = max(1, (int) ceil($seconds / 86400)); // datetime chi tiết nhưng vẫn tính theo đêm
         $totalPrice = $basePrice * $nights;
         return [
-            'valid'       => true,
-            'error'       => null,
-            'data'        => [
-                'user_id'     => $user_id,
-                'room_id'     => $room_id,
-                'check_in'    => $in['db'],
-                'check_out'   => $out['db'],
-                'total_price' => $totalPrice,
-                // giá trị để set lại input datetime-local nếu cần
-                'check_in_local'  => $in['local'],
-                'check_out_local' => $out['local'],
-            ],
+            'user_id'     => $user_id,
+            'room_id'     => $room_id,
+            'check_in'    => $in['db'],
+            'check_out'   => $out['db'],
+            'total_price' => $totalPrice,
+            // giá trị để set lại input datetime-local nếu cần
+            'check_in_local'  => $in['local'],
+            'check_out_local' => $out['local'],
         ];
     }
 
 
-    public function createBookingFromRequest(array $data): array
+    /**
+     * Tạo booking từ request.
+     * - Thành công: trả về booking_id (int).
+     * - Lỗi validate/business: ném BookingException với errorCode chuẩn hoá.
+     * - Lỗi hệ thống: ném Throwable như cũ (để global handler xử lý).
+     */
+    public function createBookingFromRequest(array $data): int
     {
         $user_id = (int) ($data['user_id'] ?? 0);
         $room_id = (int) ($data['room_id'] ?? 0);
         $check_in = trim((string) ($data['check_in'] ?? ''));
         $check_out = trim((string) ($data['check_out'] ?? ''));
 
-        $validation = $this->validateCreateInput($user_id, $room_id, $check_in, $check_out);
-        if (!$validation['valid']) {
-            return [
-                'success'    => false,
-                'booking_id' => null,
-                'error'      => $validation['error'],
-            ];
-        }
-
-        $payload = $validation['data'];
+        // Validate & chuẩn hoá dữ liệu – ném BookingException nếu lỗi
+        $payload = $this->validateCreateInput($user_id, $room_id, $check_in, $check_out);
         $check_in = $payload['check_in'];
         $check_out = $payload['check_out'];
         $total_price = $payload['total_price'];
@@ -172,14 +182,14 @@ class BookingService
             $locked = $lockRoom->fetch(PDO::FETCH_ASSOC);
             if (!$locked) {
                 $this->pdo->rollBack();
-                return ['success' => false, 'booking_id' => null, 'error' => 'room_not_found'];
+                throw new BookingException('room_not_found', 'Room not found for locking');
             }
 
             // 2) Check availability (interval overlap) theo datetime
             $overlaps = $this->getOverlappingBookings($room_id, $check_in, $check_out, null, false);
             if (!empty($overlaps)) {
                 $this->pdo->rollBack();
-                return ['success' => false, 'booking_id' => null, 'error' => 'unavailable'];
+                throw new BookingException('unavailable', 'Room is not available in selected range');
             }
 
             // 3. Insert booking (status theo luồng: mới tạo = pending, chờ thanh toán)
@@ -193,7 +203,7 @@ class BookingService
             ]);
             if (!$bookingId) {
                 $this->pdo->rollBack();
-                return ['success' => false, 'booking_id' => null, 'error' => 'create_failed'];
+                throw new BookingException('create_failed', 'Failed to create booking');
             }
 
             // 4. Insert booking_details
@@ -204,11 +214,11 @@ class BookingService
             ]);
             if (!$detailId) {
                 $this->pdo->rollBack();
-                return ['success' => false, 'booking_id' => null, 'error' => 'create_failed'];
+                throw new BookingException('create_failed', 'Failed to create booking detail');
             }
 
             $this->pdo->commit();
-            return ['success' => true, 'booking_id' => $bookingId, 'error' => null];
+            return $bookingId;
         } catch (\Throwable $e) {
             $this->pdo->rollBack();
             throw $e;
@@ -216,15 +226,20 @@ class BookingService
     }
 
 
+    /**
+     * Chuẩn hoá flow thay đổi status booking.
+     * - Mọi thay đổi status phải đi qua đây.
+     * - Lỗi: ném BookingException với errorCode ('not_found', 'invalid_transition').
+     */
     public function updateStatus(int $bookingId, string $newStatus, ?string $paymentMethod = null, ?string $paymentAt = null): bool
     {
         $booking = $this->bookingModel->findById($bookingId);
         if (!$booking) {
-            return false;
+            throw new BookingException('not_found', 'Booking not found');
         }
         $currentStatus = $booking['status'] ?? '';
         if (!BookingStatus::canTransitionTo($currentStatus, $newStatus)) {
-            return false;
+            throw new BookingException('invalid_transition', "Cannot transition from {$currentStatus} to {$newStatus}");
         }
         $data = ['status' => $newStatus];
         if ($paymentMethod !== null) {

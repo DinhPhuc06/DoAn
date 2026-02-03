@@ -2,35 +2,33 @@
 
 namespace App\Controllers_Admin;
 
-use App\Models\User;
-use App\Models\Role;
+use App\Service\AdminCustomerService;
 
 /**
- * Admin CRUD Khách hàng (users). Chỉ điều phối request, dữ liệu xử lý ở Model.
+ * Admin CRUD Khách hàng (users).
+ * Controller chỉ điều phối request, toàn bộ validate/hash/CRUD nằm trong Service.
  */
 class AdminCustomerController extends AdminBaseController
 {
-    private User $userModel;
-    private Role $roleModel;
+    private AdminCustomerService $customerService;
 
     public function __construct()
     {
         parent::__construct();
-        $this->userModel = new User();
-        $this->roleModel = new Role();
+        $this->customerService = new AdminCustomerService();
     }
 
     /** GET: Danh sách khách hàng */
     public function index(): void
     {
-        $items = $this->userModel->getAll();
+        $items = $this->customerService->listCustomers();
         $this->render('Customer/index', ['items' => $items]);
     }
 
     /** GET: Form thêm mới */
     public function create(): void
     {
-        $roles = $this->roleModel->getAll();
+        $roles = $this->customerService->listRoles();
         $this->render('Customer/create', ['roles' => $roles]);
     }
 
@@ -41,33 +39,32 @@ class AdminCustomerController extends AdminBaseController
             $this->redirect('admin.php?page=customer');
             return;
         }
-        $data = [
+        $result = $this->customerService->createFromRequest([
             'role_id'   => $this->input('role_id'),
             'full_name' => $this->input('full_name'),
             'email'     => $this->input('email'),
-            'password'  => $this->input('password') ? password_hash($this->input('password'), PASSWORD_DEFAULT) : '',
+            'password'  => $this->input('password'),
             'phone'     => $this->input('phone'),
-            'status'    => (int) $this->input('status', 1),
-        ];
-        if ($data['email'] && $data['password']) {
-            $id = $this->userModel->create($data);
-            if ($id) {
-                $this->redirect('admin.php?page=customer&message=created');
-                return;
-            }
+            'status'    => $this->input('status', 1),
+        ]);
+
+        if ($result['success']) {
+            $this->redirect('admin.php?page=customer&message=created');
+            return;
         }
+
         $this->redirect('admin.php?page=customer&action=create&error=1');
     }
 
     /** GET: Form sửa */
     public function edit(int $id): void
     {
-        $item = $this->userModel->findById($id);
+        $item = $this->customerService->findCustomer($id);
         if (!$item) {
             $this->redirect('admin.php?page=customer');
             return;
         }
-        $roles = $this->roleModel->getAll();
+        $roles = $this->customerService->listRoles();
         $this->render('Customer/edit', ['item' => $item, 'roles' => $roles]);
     }
 
@@ -78,30 +75,26 @@ class AdminCustomerController extends AdminBaseController
             $this->redirect('admin.php?page=customer&action=edit&id=' . $id);
             return;
         }
-        $item = $this->userModel->findById($id);
-        if (!$item) {
-            $this->redirect('admin.php?page=customer');
-            return;
-        }
-        $data = [
+        $result = $this->customerService->updateFromRequest($id, [
             'role_id'   => $this->input('role_id'),
             'full_name' => $this->input('full_name'),
             'email'     => $this->input('email'),
             'phone'     => $this->input('phone'),
-            'status'    => (int) $this->input('status', 1),
-        ];
-        $password = $this->input('password');
-        if ($password !== null && $password !== '') {
-            $data['password'] = password_hash($password, PASSWORD_DEFAULT);
-        }
-        $ok = $this->userModel->update($id, $data);
-        $this->redirect($ok ? '/admin.php?page=customer&message=updated' : '/admin.php?page=customer&action=edit&id=' . $id . '&error=1');
+            'status'    => $this->input('status', 1),
+            'password'  => $this->input('password'),
+        ]);
+
+        $this->redirect(
+            $result['success']
+                ? '/admin.php?page=customer&message=updated'
+                : '/admin.php?page=customer&action=edit&id=' . $id . '&error=1'
+        );
     }
 
     /** POST/GET: Xóa */
     public function delete(int $id): void
     {
-        $this->userModel->delete($id);
+        $this->customerService->deleteCustomer($id);
         $this->redirect('admin.php?page=customer&message=deleted');
     }
 }

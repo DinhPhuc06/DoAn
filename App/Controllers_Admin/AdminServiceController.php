@@ -2,23 +2,22 @@
 
 namespace App\Controllers_Admin;
 
-use App\Models\Service;
-
+use App\Service\AdminServiceService;
 
 class AdminServiceController extends AdminBaseController
 {
-    private Service $model;
+    private AdminServiceService $serviceService;
 
     public function __construct()
     {
         parent::__construct();
-        $this->model = new Service();
+        $this->serviceService = new AdminServiceService();
     }
 
     /** GET: Danh sách */
     public function index(): void
     {
-        $items = $this->model->getAll();
+        $items = $this->serviceService->listServices();
         $this->render('Services/index', ['items' => $items]);
     }
 
@@ -35,21 +34,25 @@ class AdminServiceController extends AdminBaseController
             $this->redirect('admin.php?page=service');
             return;
         }
-        $data = [
+        $result = $this->serviceService->createFromRequest([
             'name'        => $this->input('name'),
-            'price'       => $this->input('price') !== '' ? (float) $this->input('price') : null,
+            'price'       => $this->input('price'),
             'description' => $this->input('description'),
             'type'        => $this->input('type'),
-            'is_active'   => (int) $this->input('is_active', 1),
-        ];
-        $id = $this->model->create($data);
-        $this->redirect($id ? '/admin.php?page=service&message=created' : '/admin.php?page=service&action=create&error=1');
+            'is_active'   => $this->input('is_active', 1),
+        ]);
+
+        $this->redirect(
+            $result['success']
+                ? '/admin.php?page=service&message=created'
+                : '/admin.php?page=service&action=create&error=1'
+        );
     }
 
     /** GET: Form sửa */
     public function edit(int $id): void
     {
-        $item = $this->model->findById($id);
+        $item = $this->serviceService->findService($id);
         if (!$item) {
             $this->redirect('admin.php?page=service');
             return;
@@ -64,26 +67,25 @@ class AdminServiceController extends AdminBaseController
             $this->redirect('admin.php?page=service&action=edit&id=' . $id);
             return;
         }
-        $item = $this->model->findById($id);
-        if (!$item) {
-            $this->redirect('admin.php?page=service');
-            return;
-        }
-        $data = [
+        $result = $this->serviceService->updateFromRequest($id, [
             'name'        => $this->input('name'),
-            'price'       => $this->input('price') !== '' ? (float) $this->input('price') : null,
+            'price'       => $this->input('price'),
             'description' => $this->input('description'),
             'type'        => $this->input('type'),
-            'is_active'   => (int) $this->input('is_active', 1),
-        ];
-        $ok = $this->model->update($id, $data);
-        $this->redirect($ok ? '/admin.php?page=service&message=updated' : '/admin.php?page=service&action=edit&id=' . $id . '&error=1');
+            'is_active'   => $this->input('is_active', 1),
+        ]);
+
+        $this->redirect(
+            $result['success']
+                ? '/admin.php?page=service&message=updated'
+                : '/admin.php?page=service&action=edit&id=' . $id . '&error=1'
+        );
     }
 
     /** Xóa */
     public function delete(int $id): void
     {
-        $this->model->delete($id);
+        $this->serviceService->deleteService($id);
         $this->redirect('admin.php?page=service&message=deleted');
     }
 }

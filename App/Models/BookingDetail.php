@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Core\Model;
-use App\Core\BookingStatus;
-use PDO;
 
 
 class BookingDetail extends Model
@@ -16,28 +14,4 @@ class BookingDetail extends Model
         'room_id',
         'price',
     ];
-
-
-    public function hasOverlap(int $room_id, string $check_in, string $check_out, ?int $exclude_booking_id = null): bool
-    {
-        $blockStatuses = BookingStatus::statusesThatBlockRoom();
-        $placeholders = implode(',', array_fill(0, count($blockStatuses), '?'));
-        $sql = "
-            SELECT 1
-            FROM bookings b
-            JOIN booking_details bd ON b.id = bd.booking_id
-            WHERE bd.room_id = ?
-            AND b.status IN ($placeholders)
-            AND NOT (b.check_out <= ? OR b.check_in >= ?)
-        ";
-        $bind = array_merge([$room_id], $blockStatuses, [$check_in, $check_out]);
-        if ($exclude_booking_id !== null) {
-            $sql .= " AND b.id != ?";
-            $bind[] = $exclude_booking_id;
-        }
-        $sql .= " LIMIT 1";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($bind);
-        return (bool) $stmt->fetch(PDO::FETCH_ASSOC);
-    }
 }

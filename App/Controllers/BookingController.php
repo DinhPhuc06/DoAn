@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Auth;
 use App\Core\Session;
+use App\Core\BookingException;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Service\BookingService;
@@ -76,26 +77,29 @@ class BookingController extends Controller
             return;
         }
 
-        $result = $this->bookingService->createBookingFromRequest([
-            'user_id'   => $userId,
-            'room_id'   => $this->input('room_id'),
-            'check_in'  => $this->input('check_in'),
-            'check_out' => $this->input('check_out'),
-        ]);
-
-        if ($result['success']) {
-            $this->redirect(url('/booking/success?id=' . $result['booking_id']));
-            return;
-        }
-
         $roomId = (int) $this->input('room_id');
-        $checkIn = $this->input('check_in');
-        $checkOut = $this->input('check_out');
-        $query = 'room_id=' . $roomId . '&error=' . $result['error'];
-        if ($checkIn && $checkOut) {
-            $query .= '&check_in=' . urlencode($checkIn) . '&check_out=' . urlencode($checkOut);
+        $checkIn = (string) $this->input('check_in');
+        $checkOut = (string) $this->input('check_out');
+
+        try {
+            $bookingId = $this->bookingService->createBookingFromRequest([
+                'user_id'   => $userId,
+                'room_id'   => $roomId,
+                'check_in'  => $checkIn,
+                'check_out' => $checkOut,
+            ]);
+
+            $this->redirect(url('/booking/success?id=' . $bookingId));
+            return;
+        } catch (BookingException $e) {
+            // Chuẩn hoá: Controller chỉ bắt lỗi và hiển thị theo errorCode
+            $errorCode = $e->getErrorCode();
+            $query = 'room_id=' . $roomId . '&error=' . urlencode($errorCode);
+            if ($checkIn !== '' && $checkOut !== '') {
+                $query .= '&check_in=' . urlencode($checkIn) . '&check_out=' . urlencode($checkOut);
+            }
+            $this->redirect(url('/booking/form?' . $query));
         }
-        $this->redirect(url('/booking/form?' . $query));
     }
 
     /**
