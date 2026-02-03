@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Core;
+
+use PDO;
+use PDOException;
+
+
+class Database
+{
+    private static ?Database $instance = null;
+    private ?PDO $pdo = null;
+    private array $config;
+
+    private function __construct()
+    {
+        $configPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'Config' . DIRECTORY_SEPARATOR . 'database.php';
+
+        if (!is_file($configPath)) {
+            throw new PDOException('File cấu hình database không tồn tại: ' . $configPath);
+        }
+
+        $this->config = require $configPath;
+        $this->connect();
+    }
+
+
+    public static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    private function connect(): void
+    {
+        $dsn = sprintf(
+            'mysql:host=%s;port=%d;dbname=%s;charset=%s',
+            $this->config['host'],
+            $this->config['port'] ?? 3306,
+            $this->config['dbname'],
+            $this->config['charset'] ?? 'utf8mb4'
+        );
+
+        try {
+            $this->pdo = new PDO(
+                $dsn,
+                $this->config['username'],
+                $this->config['password'],
+                $this->config['options'] ?? []
+            );
+        } catch (PDOException $e) {
+            throw new PDOException(
+                'Kết nối database thất bại: ' . $e->getMessage(),
+                (int) $e->getCode()
+            );
+        }
+    }
+
+
+    public function getConnection(): PDO
+    {
+        return $this->pdo;
+    }
+
+
+    private function __clone() {}
+
+
+    public function __wakeup()
+    {
+        throw new PDOException('Cannot unserialize singleton');
+    }
+}
