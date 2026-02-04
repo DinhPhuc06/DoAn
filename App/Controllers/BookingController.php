@@ -50,12 +50,18 @@ class BookingController extends Controller
         }
 
         $roomType = $this->roomTypeModel->findById($room['room_type_id'] ?? 0);
+
+        // Get addon services
+        $serviceModel = new \App\Models\Service();
+        $addons = $serviceModel->getAddons();
+
         $this->useLayout = false;
         $this->render('Booking/form', [
-            'room'     => $room,
+            'room' => $room,
             'roomType' => $roomType,
-            'checkIn'  => $checkIn,
+            'checkIn' => $checkIn,
             'checkOut' => $checkOut,
+            'addons' => $addons,
         ]);
     }
 
@@ -76,11 +82,24 @@ class BookingController extends Controller
             return;
         }
 
+        // Parse addon services from form
+        $addonsInput = $_POST['addons'] ?? [];
+        $addons = [];
+        foreach ($addonsInput as $serviceId => $data) {
+            if (!empty($data['selected'])) {
+                $addons[] = [
+                    'service_id' => (int) $serviceId,
+                    'quantity' => max(1, (int) ($data['qty'] ?? 1)),
+                ];
+            }
+        }
+
         $result = $this->bookingService->createBookingFromRequest([
-            'user_id'   => $userId,
-            'room_id'   => $this->input('room_id'),
-            'check_in'  => $this->input('check_in'),
+            'user_id' => $userId,
+            'room_id' => $this->input('room_id'),
+            'check_in' => $this->input('check_in'),
             'check_out' => $this->input('check_out'),
+            'addons' => $addons,
         ]);
 
         if ($result['success']) {
@@ -108,7 +127,7 @@ class BookingController extends Controller
         $this->useLayout = false;
         $this->render('Booking/success', [
             'bookingId' => $bookingId,
-            'booking'   => $booking,
+            'booking' => $booking,
         ]);
     }
 }

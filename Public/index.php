@@ -22,6 +22,7 @@ use App\Controllers\Admin\RoomController as AdminRoomController;
 use App\Controllers\Admin\BookingController as AdminBookingController;
 use App\Controllers\Admin\AmenityController;
 use App\Controllers\Admin\ServiceController;
+use App\Controllers\ReviewController;
 
 // Set base path cho router (nếu app nằm trong subfolder)
 Router::setBasePath('');
@@ -38,6 +39,9 @@ Router::get('/rooms/{id}', RoomController::class, 'detail');
 Router::get('/booking/form', BookingController::class, 'form');
 Router::get('/booking/success', BookingController::class, 'success');
 Router::post('/booking/store', BookingController::class, 'store');
+
+// Reviews (yêu cầu đăng nhập)
+Router::post('/reviews', ReviewController::class, 'store', [AuthMiddleware::class]);
 
 // Auth: login/logout (GuestMiddleware = đã login thì redirect về home)
 Router::get('/login', AuthController::class, 'loginForm', [GuestMiddleware::class]);

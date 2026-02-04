@@ -85,8 +85,8 @@ class BookingService
             $dt = \DateTimeImmutable::createFromFormat($fmt, $value);
             if ($dt instanceof \DateTimeImmutable) {
                 return [
-                    'ok'    => true,
-                    'db'    => $dt->format('Y-m-d H:i:s'),
+                    'ok' => true,
+                    'db' => $dt->format('Y-m-d H:i:s'),
                     'local' => $dt->format('Y-m-d\TH:i'),
                 ];
             }
@@ -98,8 +98,8 @@ class BookingService
         }
         $dt = (new \DateTimeImmutable())->setTimestamp($ts);
         return [
-            'ok'    => true,
-            'db'    => $dt->format('Y-m-d H:i:s'),
+            'ok' => true,
+            'db' => $dt->format('Y-m-d H:i:s'),
             'local' => $dt->format('Y-m-d\TH:i'),
         ];
     }
@@ -143,13 +143,13 @@ class BookingService
         $nights = max(1, (int) ceil($seconds / 86400)); // datetime chi tiết nhưng vẫn tính theo đêm
         $totalPrice = $basePrice * $nights;
         return [
-            'user_id'     => $user_id,
-            'room_id'     => $room_id,
-            'check_in'    => $in['db'],
-            'check_out'   => $out['db'],
+            'user_id' => $user_id,
+            'room_id' => $room_id,
+            'check_in' => $in['db'],
+            'check_out' => $out['db'],
             'total_price' => $totalPrice,
             // giá trị để set lại input datetime-local nếu cần
-            'check_in_local'  => $in['local'],
+            'check_in_local' => $in['local'],
             'check_out_local' => $out['local'],
         ];
     }
@@ -157,71 +157,118 @@ class BookingService
 
     /**
      * Tạo booking từ request.
-     * - Thành công: trả về booking_id (int).
-     * - Lỗi validate/business: ném BookingException với errorCode chuẩn hoá.
-     * - Lỗi hệ thống: ném Throwable như cũ (để global handler xử lý).
+     * - Thành công: trả về array{success: true, booking_id: int}
+     * - Lỗi: trả về array{success: false, error: string}
      */
-    public function createBookingFromRequest(array $data): int
+    public function createBookingFromRequest(array $data): array
     {
         $user_id = (int) ($data['user_id'] ?? 0);
         $room_id = (int) ($data['room_id'] ?? 0);
         $check_in = trim((string) ($data['check_in'] ?? ''));
         $check_out = trim((string) ($data['check_out'] ?? ''));
+        $addons = $data['addons'] ?? [];
 
-        // Validate & chuẩn hoá dữ liệu – ném BookingException nếu lỗi
-        $payload = $this->validateCreateInput($user_id, $room_id, $check_in, $check_out);
-        $check_in = $payload['check_in'];
-        $check_out = $payload['check_out'];
-        $total_price = $payload['total_price'];
-
-        $this->pdo->beginTransaction();
         try {
+            // Validate & chuẩn hoá dữ liệu – ném BookingException nếu lỗi
+            $payload = $this->validateCreateInput($user_id, $room_id, $check_in, $check_out);
+            $check_in = $payload['check_in'];
+            $check_out = $payload['check_out'];
+            $room_total_price = $payload['total_price'];
+
+            // Calculate addon services total
+            $addon_total = 0;
+            $addonDetails = [];
+            if (!empty($addons)) {
+                $serviceModel = new \App\Models\Service();
+                foreach ($addons as $addon) {
+                    $serviceId = (int) ($addon['service_id'] ?? 0);
+                    $quantity = max(1, (int) ($addon['quantity'] ?? 1));
+
+                    $service = $serviceModel->findById($serviceId);
+                    if ($service && $service['is_active']) {
+                        $priceAtTime = (float) $service['price'];
+                        $totalAmount = $priceAtTime * $quantity;
+                        $addon_total += $totalAmount;
+
+                        $addonDetails[] = [
+                            'service_id' => $serviceId,
+                            'quantity' => $quantity,
+                            'price_at_time' => $priceAtTime,
+                            'total_amount' => $totalAmount,
+                        ];
+                    }
+                }
+            }
+
+            $total_price = $room_total_price + $addon_total;
+
+            $this->pdo->beginTransaction();
+
             // 1) LOCK room row (chống race): mọi booking cùng room_id sẽ serialize
             $lockRoom = $this->pdo->prepare("SELECT id FROM room_details WHERE id = ? FOR UPDATE");
             $lockRoom->execute([$room_id]);
             $locked = $lockRoom->fetch(PDO::FETCH_ASSOC);
             if (!$locked) {
                 $this->pdo->rollBack();
-                throw new BookingException('room_not_found', 'Room not found for locking');
+                return ['success' => false, 'error' => 'room_not_found'];
             }
 
             // 2) Check availability (interval overlap) theo datetime
             $overlaps = $this->getOverlappingBookings($room_id, $check_in, $check_out, null, false);
             if (!empty($overlaps)) {
                 $this->pdo->rollBack();
-                throw new BookingException('unavailable', 'Room is not available in selected range');
+                return ['success' => false, 'error' => 'unavailable'];
             }
 
             // 3. Insert booking (status theo luồng: mới tạo = pending, chờ thanh toán)
             $bookingId = $this->bookingModel->create([
-                'user_id'     => $user_id,
-                'check_in'    => $check_in,
-                'check_out'   => $check_out,
+                'user_id' => $user_id,
+                'check_in' => $check_in,
+                'check_out' => $check_out,
                 'total_price' => $total_price,
-                'status'      => BookingStatus::defaultStatus(),
-                'type'        => 'room',
+                'status' => BookingStatus::defaultStatus(),
+                'type' => 'room',
             ]);
             if (!$bookingId) {
                 $this->pdo->rollBack();
-                throw new BookingException('create_failed', 'Failed to create booking');
+                return ['success' => false, 'error' => 'create_failed'];
             }
 
             // 4. Insert booking_details
             $detailId = $this->bookingDetailModel->create([
                 'booking_id' => $bookingId,
-                'room_id'    => $room_id,
-                'price'      => $total_price,
+                'room_id' => $room_id,
+                'price' => $room_total_price,
             ]);
             if (!$detailId) {
                 $this->pdo->rollBack();
-                throw new BookingException('create_failed', 'Failed to create booking detail');
+                return ['success' => false, 'error' => 'create_failed'];
+            }
+
+            // 5. Insert booking_service records
+            if (!empty($addonDetails)) {
+                $bookingServiceModel = new \App\Models\BookingServiceItem();
+                foreach ($addonDetails as $addonData) {
+                    $bookingServiceModel->create([
+                        'booking_id' => $bookingId,
+                        'service_id' => $addonData['service_id'],
+                        'quantity' => $addonData['quantity'],
+                        'price_at_time' => $addonData['price_at_time'],
+                        'total_amount' => $addonData['total_amount'],
+                        'status' => 'pending',
+                    ]);
+                }
             }
 
             $this->pdo->commit();
-            return $bookingId;
+            return ['success' => true, 'booking_id' => $bookingId];
+        } catch (BookingException $e) {
+            return ['success' => false, 'error' => $e->getErrorCode()];
         } catch (\Throwable $e) {
-            $this->pdo->rollBack();
-            throw $e;
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            return ['success' => false, 'error' => 'create_failed'];
         }
     }
 
