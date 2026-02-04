@@ -2,7 +2,11 @@
 
 namespace App\Core;
 
-
+/**
+ * Auth Middleware - Yêu cầu user frontend đã đăng nhập.
+ * Nếu chưa đăng nhập → redirect về trang login.
+ * Dùng cho các route: profile, booking, ...
+ */
 class AuthMiddleware extends Middleware
 {
     /** URL redirect khi chưa đăng nhập */

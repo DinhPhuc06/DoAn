@@ -2,7 +2,9 @@
 
 namespace App\Core;
 
-
+/**
+ * Validator - Xác thực dữ liệu input
+ */
 class Validator
 {
     private array $data;
@@ -17,7 +19,9 @@ class Validator
         $this->messages = $messages;
     }
 
-
+    /**
+     * Validate dữ liệu
+     */
     public function validate(): bool
     {
         $this->errors = [];
@@ -97,7 +101,9 @@ class Validator
         return true;
     }
 
-
+    /**
+     * Thêm lỗi
+     */
     private function addError(string $field, string $rule, string $message): void
     {
         if (!isset($this->errors[$field])) {
@@ -106,7 +112,9 @@ class Validator
         $this->errors[$field][] = $message;
     }
 
-
+    /**
+     * Lấy tất cả lỗi
+     */
     public function errors(): array
     {
         return $this->errors;
@@ -120,7 +128,9 @@ class Validator
         return $this->errors[$field][0] ?? null;
     }
 
-
+    /**
+     * Kiểm tra có lỗi không
+     */
     public function fails(): bool
     {
         return !empty($this->errors);

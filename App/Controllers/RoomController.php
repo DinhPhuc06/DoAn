@@ -3,35 +3,39 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
-use App\Service\RoomService;
-use function App\Core\url;
+use App\Models\RoomType;
+use App\Models\Room;
+use App\Models\Service;
 
 /**
  * BOOKING FLOW - Bước 1 & 2 & 3:
  * Xem phòng (loại phòng) → Tìm phòng (lọc check-in/check-out, loại, giá) → Chọn phòng (room_id qua URL).
- * Controller chỉ điều phối; validate/tìm phòng nằm trong Service.
+ * Controller chỉ điều phối; dữ liệu từ Model.
  */
 class RoomController extends Controller
 {
-    private RoomService $roomService;
+    private RoomType $roomTypeModel;
+    private Room $roomModel;
+    private Service $serviceModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->viewPath = BASE_PATH . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Views';
-        $this->roomService = new RoomService();
+        $this->roomTypeModel = new RoomType();
+        $this->roomModel = new Room();
+        $this->serviceModel = new Service();
     }
 
-    /**
-     * XEM PHÒNG: Danh sách loại phòng (hình ảnh, tên, sức chứa, addon, giá)
-     */
     public function index(): void
     {
-        $data = $this->roomService->getRoomTypesForDisplay();
-        $this->useLayout = false;
+        $roomTypes = $this->roomTypeModel->getAllWithImages();
+        $addons = $this->serviceModel->getAddons();
+        $this->useLayout = true;
         $this->render('Room/types', [
-            'roomTypes' => $data['roomTypes'],
-            'addons'    => $data['addons'],
+            'roomTypes' => $roomTypes,
+            'addons' => $addons,
+            'title' => 'Danh sách phòng - Booking Hotel',
         ]);
     }
 
@@ -43,35 +47,63 @@ class RoomController extends Controller
         $checkIn = $this->input('check_in');
         $checkOut = $this->input('check_out');
         $roomTypeId = $this->input('room_type_id') !== null && $this->input('room_type_id') !== '' ? (int) $this->input('room_type_id') : null;
-        $data = $this->roomService->searchAvailableRooms($checkIn, $checkOut, $roomTypeId);
 
-        $this->useLayout = false;
+        $roomTypes = $this->roomTypeModel->getAll();
+        $rooms = [];
+
+        if ($checkIn && $checkOut) {
+            $checkIn = date('Y-m-d', strtotime($checkIn));
+            $checkOut = date('Y-m-d', strtotime($checkOut));
+            if ($checkIn < $checkOut) {
+                $rooms = $this->roomModel->getAvailableInRange($checkIn, $checkOut, $roomTypeId);
+            }
+        }
+
+        $this->useLayout = true;
         $this->render('Room/search', [
-            'roomTypes'  => $data['roomTypes'],
-            'rooms'      => $data['rooms'],
-            'checkIn'    => $data['checkIn'],
-            'checkOut'   => $data['checkOut'],
-            'roomTypeId' => $data['roomTypeId'],
-            'error'      => $data['error'],
+            'roomTypes' => $roomTypes,
+            'rooms' => $rooms,
+            'checkIn' => $checkIn ?? '',
+            'checkOut' => $checkOut ?? '',
+            'roomTypeId' => $roomTypeId,
+            'title' => 'Tìm kiếm phòng - Booking Hotel',
         ]);
     }
 
-    /**
-     * CHỌN PHÒNG: Chi tiết phòng, truyền room_id qua URL → link tới form booking
-     */
     public function detail(int $id): void
     {
-        // Dùng model trực tiếp cho hiển thị đơn giản (không có transaction/validate phức tạp)
-        $room = (new \App\Models\Room())->findById($id);
+        $room = $this->roomModel->findById($id);
         if (!$room) {
             $this->redirect(url('/rooms'));
             return;
         }
-        $roomType = (new \App\Models\RoomType())->findById($room['room_type_id'] ?? 0);
-        $this->useLayout = false;
+        $roomType = $this->roomTypeModel->getFullDetail($room['room_type_id'] ?? 0);
+        $checkIn = $this->input('check_in') ?? '';
+        $checkOut = $this->input('check_out') ?? '';
+        $this->useLayout = true;
         $this->render('Room/detail', [
-            'room'     => $room,
+            'room' => $room,
             'roomType' => $roomType,
+            'checkIn' => $checkIn,
+            'checkOut' => $checkOut,
+            'title' => 'Chi tiết phòng ' . ($room['room_number'] ?? ''),
+        ]);
+    }
+
+    /**
+     * Hiển thị chi tiết loại phòng (room type)
+     */
+    public function showType(int $id): void
+    {
+        $roomType = $this->roomTypeModel->getFullDetail($id);
+        if (!$roomType) {
+            $this->redirect(url('/rooms'));
+            return;
+        }
+        $this->useLayout = true;
+        $this->render('Room/type-detail', [
+            'roomType' => $roomType,
+            'title' => $roomType['name'] . ' - Booking Hotel',
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Core\Model;
 use PDO;
 
+/** Model Service - Bảng services. */
 class Service extends Model
 {
     protected string $table = 'services';
@@ -17,7 +18,9 @@ class Service extends Model
         'is_active',
     ];
 
-
+    /**
+     * Dịch vụ addon (đi kèm loại phòng khi hiển thị)
+     */
     public function getAddons(): array
     {
         $sql = "SELECT * FROM `{$this->table}` WHERE `type` = 'addon' AND (`is_active` = 1 OR `is_active` IS NULL)";

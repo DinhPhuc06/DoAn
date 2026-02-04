@@ -5,7 +5,10 @@ namespace App\Core;
 use PDO;
 use PDOException;
 
-
+/**
+ * Model cha - Tất cả model trong App\Models kế thừa từ class này.
+ * Kết nối DB qua Database::getInstance(), cung cấp CRUD chuẩn.
+ */
 abstract class Model
 {
     protected PDO $pdo;
@@ -24,7 +27,10 @@ abstract class Model
         $this->pdo = Database::getInstance()->getConnection();
     }
 
-
+    /**
+     * Danh sách tất cả bản ghi
+     * @return array<int, array>
+     */
     public function getAll(): array
     {
         $sql = "SELECT * FROM `{$this->table}`";
@@ -32,7 +38,11 @@ abstract class Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-
+    /**
+     * Chi tiết một bản ghi theo id
+     * @param int|string $id
+     * @return array<string, mixed>|null
+     */
     public function findById($id): ?array
     {
         $sql = "SELECT * FROM `{$this->table}` WHERE `{$this->primaryKey}` = ? LIMIT 1";
@@ -42,7 +52,11 @@ abstract class Model
         return $row ?: null;
     }
 
-
+    /**
+     * Thêm bản ghi mới. Chỉ gán các cột trong $fillable.
+     * @param array<string, mixed> $data
+     * @return int|false Last insert id hoặc false khi thất bại
+     */
     public function create(array $data)
     {
         $data = $this->filterFillable($data);
@@ -62,7 +76,12 @@ abstract class Model
         return $ok ? (int) $this->pdo->lastInsertId() : false;
     }
 
-
+    /**
+     * Cập nhật bản ghi theo id. Chỉ cập nhật các cột trong $fillable.
+     * @param int|string $id
+     * @param array<string, mixed> $data
+     * @return bool
+     */
     public function update($id, array $data): bool
     {
         $data = $this->filterFillable($data);
@@ -85,7 +104,11 @@ abstract class Model
         return $stmt->execute($params);
     }
 
-
+    /**
+     * Xóa bản ghi theo id
+     * @param int|string $id
+     * @return bool
+     */
     public function delete($id): bool
     {
         $sql = "DELETE FROM `{$this->table}` WHERE `{$this->primaryKey}` = ?";
@@ -93,12 +116,27 @@ abstract class Model
         return $stmt->execute([$id]);
     }
 
-
+    /**
+     * Chỉ giữ lại các key nằm trong $fillable
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
+     */
     protected function filterFillable(array $data): array
     {
         if (empty($this->fillable)) {
             return $data;
         }
         return array_intersect_key($data, array_flip($this->fillable));
+    }
+
+    /**
+     * Count total records in the table
+     * @return int
+     */
+    public function count(): int
+    {
+        $sql = "SELECT COUNT(*) FROM `{$this->table}`";
+        $stmt = $this->pdo->query($sql);
+        return (int) $stmt->fetchColumn();
     }
 }

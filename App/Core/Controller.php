@@ -11,6 +11,9 @@ abstract class Controller
     /** Đường dẫn thư mục view (model con gán, ví dụ: Views_Admin) */
     protected string $viewPath = '';
 
+    /** Đường dẫn tới layout file (cho admin hoặc custom layout) */
+    protected string $layoutPath = '';
+
     /** Có dùng layout (header/sidebar/footer) khi render hay không */
     protected bool $useLayout = true;
 
@@ -42,7 +45,13 @@ abstract class Controller
             include $viewFile;
             $content = ob_get_clean();
             $content = $content ?: '';
-            include $basePath . DIRECTORY_SEPARATOR . 'Layout' . DIRECTORY_SEPARATOR . 'layout.php';
+
+            // Use custom layout if set, otherwise default layout
+            if ($this->layoutPath && is_file($this->layoutPath)) {
+                include $this->layoutPath;
+            } else {
+                include $basePath . DIRECTORY_SEPARATOR . 'Layouts' . DIRECTORY_SEPARATOR . 'layout.php';
+            }
             return;
         }
 
@@ -80,18 +89,26 @@ abstract class Controller
         return $_SERVER['REQUEST_METHOD'] === 'POST';
     }
 
+    /**
+     * Kiểm tra request có phải GET
+     */
     protected function isGet(): bool
     {
         return $_SERVER['REQUEST_METHOD'] === 'GET';
     }
 
-
+    /**
+     * Kiểm tra CSRF token (dùng trong POST request)
+     */
     protected function verifyCsrfToken(): bool
     {
         $token = $this->input('_token');
         return \App\Core\verify_csrf_token($token ?? '');
     }
 
+    /**
+     * Validate dữ liệu với Validator
+     */
     protected function validate(array $data, array $rules, array $messages = []): \App\Core\Validator
     {
         return \App\Core\Validator::make($data, $rules, $messages);

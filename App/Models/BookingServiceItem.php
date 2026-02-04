@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Model;
 
+/** Model BookingServiceItem - Bảng booking_service. Chỉ thao tác DB (CRUD). */
 class BookingServiceItem extends Model
 {
     protected string $table = 'booking_service';

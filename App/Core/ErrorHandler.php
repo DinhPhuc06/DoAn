@@ -2,10 +2,14 @@
 
 namespace App\Core;
 
-
+/**
+ * Error Handler - Xử lý lỗi và exception
+ */
 class ErrorHandler
 {
-
+    /**
+     * Xử lý lỗi HTTP (404, 500, etc.)
+     */
     public static function handle(int $code, string $message = ''): void
     {
         $errorView = BASE_PATH . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'Errors' . DIRECTORY_SEPARATOR . $code . '.php';
@@ -20,6 +24,9 @@ class ErrorHandler
         self::renderDefault($code, $message);
     }
 
+    /**
+     * Xử lý exception
+     */
     public static function handleException(\Throwable $e): void
     {
         http_response_code(500);
@@ -40,6 +47,9 @@ class ErrorHandler
         self::renderDefault(500, $debug ? $e->getMessage() : 'Internal Server Error');
     }
 
+    /**
+     * Render lỗi mặc định
+     */
     private static function renderDefault(int $code, string $message): void
     {
         $titles = [
@@ -59,7 +69,9 @@ class ErrorHandler
         echo "</body></html>";
     }
 
-
+    /**
+     * Ghi log lỗi
+     */
     private static function logError(\Throwable $e): void
     {
         $logFile = BASE_PATH . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'error.log';

@@ -2,7 +2,10 @@
 
 namespace App\Core;
 
-
+/**
+ * Booking Status - Hằng số và helper cho trạng thái đặt phòng (bookings.status).
+ * Luồng: pending (tạo mới, chờ thanh toán) → confirmed (đã thanh toán) hoặc cancelled.
+ */
 final class BookingStatus
 {
     public const PENDING   = 'pending';

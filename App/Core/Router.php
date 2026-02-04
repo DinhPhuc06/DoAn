@@ -29,32 +29,42 @@ class Router
         self::addRoute('POST', $path, $controller, $method, $middlewares);
     }
 
-
+    /**
+     * Đăng ký route với method tùy ý
+     */
     public static function add(string $method, string $path, string $controller, string $action = 'index', $middlewares = []): void
     {
         self::addRoute($method, $path, $controller, $action, $middlewares);
     }
 
-
+    /**
+     * Thêm route vào danh sách
+     * @param array|string $middlewares Một hoặc nhiều middleware class
+     */
     private static function addRoute(string $method, string $path, string $controller, string $action, $middlewares = []): void
     {
         $middlewares = is_array($middlewares) ? $middlewares : [$middlewares];
         self::$routes[] = [
-            'method'      => strtoupper($method),
-            'path'        => self::normalizePath($path),
-            'controller'  => $controller,
-            'action'      => $action,
+            'method' => strtoupper($method),
+            'path' => self::normalizePath($path),
+            'controller' => $controller,
+            'action' => $action,
             'middlewares' => array_filter($middlewares),
         ];
     }
 
+    /**
+     * Chuẩn hóa path (loại bỏ / đầu cuối, thêm / đầu)
+     */
     private static function normalizePath(string $path): string
     {
         $path = trim($path, '/');
         return $path === '' ? '/' : '/' . $path;
     }
 
-
+    /**
+     * Dispatch request - Tìm route phù hợp và gọi controller
+     */
     public static function dispatch(): void
     {
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -65,6 +75,7 @@ class Router
                 continue;
             }
 
+            $params = [];
             if (self::matchRoute($route['path'], $uri, $params)) {
                 $controllerClass = $route['controller'];
                 $action = $route['action'];
@@ -104,7 +115,10 @@ class Router
         self::handleError(404, "Route not found: {$method} {$uri}");
     }
 
-
+    /**
+     * So khớp route pattern với URI
+     * Hỗ trợ: /user/{id}, /user/{id}/edit
+     */
     private static function matchRoute(string $pattern, string $uri, array &$params = []): bool
     {
         $params = [];
@@ -126,7 +140,9 @@ class Router
         return true;
     }
 
-
+    /**
+     * Lấy URI hiện tại (loại bỏ query string và base path)
+     */
     private static function getCurrentUri(): string
     {
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
@@ -140,7 +156,9 @@ class Router
         return self::normalizePath($uri);
     }
 
-
+    /**
+     * Lấy base path của ứng dụng
+     */
     private static function getBasePath(): string
     {
         if (self::$basePath !== null) {
@@ -154,7 +172,9 @@ class Router
         return self::$basePath;
     }
 
-
+    /**
+     * Xử lý lỗi (404, 500)
+     */
     private static function handleError(int $code, string $message = ''): void
     {
         http_response_code($code);
@@ -171,7 +191,9 @@ class Router
         }
     }
 
-
+    /**
+     * Set base path (dùng khi app nằm trong subfolder)
+     */
     public static function setBasePath(string $path): void
     {
         self::$basePath = rtrim($path, '/');

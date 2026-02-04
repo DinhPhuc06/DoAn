@@ -1,93 +1,80 @@
-<?php
-$roomTypes = $roomTypes ?? [];
-$rooms = $rooms ?? [];
-$checkIn = $checkIn ?? '';
-$checkOut = $checkOut ?? '';
-$roomTypeId = $roomTypeId ?? null;
-$error = $error ?? null;
-$baseUrl = rtrim(APP_URL ?? '', '/');
-?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tìm phòng - Booking Hotel</title>
-    <style>
-        body { font-family: sans-serif; margin: 0; background: #f5f5f5; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        .nav a { color: #007bff; text-decoration: none; margin-right: 15px; }
-        .form-box { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .form-box label { display: inline-block; min-width: 100px; }
-        .form-box input, .form-box select { padding: 8px; margin: 4px 0; }
-        .btn { padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-        .btn:hover { background: #0056b3; }
-        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #333; color: #fff; }
-        .link-booking { color: #007bff; text-decoration: none; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="nav" style="margin-bottom:20px">
-            <a href="<?= $baseUrl ?>/">Trang chủ</a>
-            <a href="<?= $baseUrl ?>/rooms">Loại phòng</a>
-        </div>
-        <h1>Tìm phòng trống</h1>
-        <p>Chọn ngày/giờ check-in, check-out và loại phòng để xem phòng còn trống (tránh đặt trùng).</p>
-
-        <?php if ($error === 'missing'): ?><p style="color:#c00">Vui lòng nhập đầy đủ check-in/check-out.</p><?php endif; ?>
-        <?php if ($error === 'dates'): ?><p style="color:#c00">Check-out phải sau check-in.</p><?php endif; ?>
-
-        <div class="form-box">
-            <form method="get" action="<?= $baseUrl ?>/rooms/search">
-                <p>
-                    <label>Check-in</label>
-                    <input type="datetime-local" name="check_in" value="<?= htmlspecialchars($checkIn) ?>" required>
-                </p>
-                <p>
-                    <label>Check-out</label>
-                    <input type="datetime-local" name="check_out" value="<?= htmlspecialchars($checkOut) ?>" required>
-                </p>
-                <p>
-                    <label>Loại phòng</label>
-                    <select name="room_type_id">
-                        <option value="">Tất cả</option>
-                        <?php foreach ($roomTypes as $rt): ?>
-                            <option value="<?= (int)($rt['id'] ?? 0) ?>" <?= $roomTypeId === (int)($rt['id'] ?? 0) ? 'selected' : '' ?>><?= htmlspecialchars($rt['name'] ?? '') ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </p>
-                <p><button type="submit" class="btn">Tìm phòng</button></p>
-            </form>
-        </div>
-
-        <?php if ($checkIn && $checkOut): ?>
-        <h2>Phòng còn trống (<?= count($rooms) ?> kết quả)</h2>
-        <?php if (empty($rooms)): ?>
-            <p>Không có phòng trống trong khoảng thời gian này.</p>
-        <?php else: ?>
-        <table>
-            <thead>
-                <tr><th>Số phòng</th><th>Loại phòng</th><th>Sức chứa</th><th>Giá / đêm</th><th></th></tr>
-            </thead>
-            <tbody>
-                <?php foreach ($rooms as $r): ?>
-                <tr>
-                    <td><?= htmlspecialchars($r['room_number'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($r['room_type_name'] ?? '') ?></td>
-                    <td><?= (int)($r['capacity'] ?? 0) ?></td>
-                    <td><?= number_format((float)($r['base_price'] ?? 0)) ?> VND</td>
-                    <td>
-                        <a class="link-booking" href="<?= $baseUrl ?>/rooms/<?= (int)($r['id'] ?? 0) ?>?check_in=<?= urlencode($checkIn) ?>&check_out=<?= urlencode($checkOut) ?>">Chọn phòng</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <?php endif; ?>
-        <?php endif; ?>
+<div class="container" style="padding-top: 100px;">
+    <div class="section-header">
+        <span class="section-subtitle">Đặt phòng</span>
+        <h2 class="section-title">Tìm Phòng Trống</h2>
+        <p class="section-desc">Chọn ngày và loại phòng để tìm không gian nghỉ dưỡng phù hợp nhất</p>
     </div>
-</body>
-</html>
+
+    <!-- Search Form -->
+    <div class="search-box"
+        style="position: static; margin: 0 auto 50px; transform: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee;">
+        <form class="search-form" action="/rooms/search" method="GET">
+            <div class="form-group">
+                <label>Ngày nhận phòng</label>
+                <input type="date" name="check_in" value="<?= htmlspecialchars($checkIn) ?>" required>
+            </div>
+            <div class="form-group">
+                <label>Ngày trả phòng</label>
+                <input type="date" name="check_out" value="<?= htmlspecialchars($checkOut) ?>" required>
+            </div>
+            <div class="form-group">
+                <label>Loại phòng</label>
+                <select name="room_type_id">
+                    <option value="">Tất cả loại phòng</option>
+                    <?php foreach ($roomTypes as $rt): ?>
+                        <option value="<?= $rt['id'] ?>" <?= $roomTypeId == $rt['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($rt['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary search-btn">Cập Nhật</button>
+        </form>
+    </div>
+
+    <?php if ($checkIn && $checkOut): ?>
+        <h3 style="margin-bottom: 30px; color: var(--secondary); font-size: 1.5rem;">
+            Kết quả: <?= count($rooms) ?> phòng trống từ <?= date('d/m/Y', strtotime($checkIn)) ?> đến
+            <?= date('d/m/Y', strtotime($checkOut)) ?>
+        </h3>
+
+        <?php if (empty($rooms)): ?>
+            <div style="text-align: center; padding: 50px; background: #fff; border-radius: 15px; border: 1px solid #eee;">
+                <p style="font-size: 1.2rem; color: #666;">Rất tiếc, không có phòng nào trống trong khoảng thời gian này.</p>
+                <a href="/rooms" class="btn btn-primary" style="margin-top: 20px;">Xem Các Loại Phòng</a>
+            </div>
+        <?php else: ?>
+            <div class="rooms-grid">
+                <?php foreach ($rooms as $r): ?>
+                    <div class="room-card">
+                        <div class="room-image">
+                            <!-- Giả sử có ảnh mặc định hoặc filter sau -->
+                            <img src="/assets/image/image.png" alt="<?= htmlspecialchars($r['room_type_name']) ?>">
+                            <span class="room-badge">Số phòng: <?= htmlspecialchars($r['room_number']) ?></span>
+                        </div>
+                        <div class="room-content">
+                            <h3 class="room-title"><?= htmlspecialchars($r['room_type_name']) ?></h3>
+                            <div class="room-amenities">
+                                <span><i class="fa-solid fa-users"></i> <?= $r['capacity'] ?> Khách</span>
+                                <span><i class="fa-solid fa-bed"></i> <?= $r['capacity'] > 1 ? 'King Bed' : 'Single Bed' ?></span>
+                                <span><i class="fa-solid fa-circle-check"></i> Có sẵn</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="amount"><?= number_format($r['base_price'], 0, ',', '.') ?>đ</span>
+                                <span class="period">/ đêm</span>
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <a href="/rooms/<?= $r['id'] ?>?check_in=<?= urlencode($checkIn) ?>&check_out=<?= urlencode($checkOut) ?>"
+                                    class="btn btn-primary" style="width: 100%; border-radius: 8px;">Chọn Phòng Này</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    <?php else: ?>
+        <div style="text-align: center; padding: 50px; background: #fff; border-radius: 15px; border: 1px solid #eee;">
+            <p style="font-size: 1.2rem; color: #666;">Vui lòng nhập ngày để tìm phòng trống.</p>
+        </div>
+    <?php endif; ?>
+</div>

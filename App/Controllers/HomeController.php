@@ -17,8 +17,12 @@ class HomeController extends Controller
 
     public function index(): void
     {
+        $roomTypeModel = new \App\Models\RoomType();
+        $roomTypes = $roomTypeModel->getAllWithImages();
+
         $this->render('Home/index', [
             'title' => 'Trang chủ - Booking Hotel',
+            'roomTypes' => $roomTypes
         ]);
     }
 }
