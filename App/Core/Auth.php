@@ -2,7 +2,11 @@
 
 namespace App\Core;
 
-
+/**
+ * Auth - Xác thực người dùng.
+ * Hai guard: user (frontend) và admin (khu vực admin).
+ * Controller không tự check quyền; dùng AuthMiddleware / AdminMiddleware.
+ */
 class Auth
 {
     private const USER_KEY = 'user';

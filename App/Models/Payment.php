@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Model;
 
+/** Model Payment - Bảng payments. CRUD: getAll, findById, create, update, delete. */
 class Payment extends Model
 {
     protected string $table = 'payments';

@@ -24,7 +24,7 @@ $totalPrice = $pricePerNight * $nights;
         .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .nav a { color: #007bff; text-decoration: none; margin-right: 15px; }
         label { display: inline-block; min-width: 120px; }
-        input[type="datetime-local"], input[type="text"] { padding: 8px; margin: 4px 0; width: 260px; }
+        input[type="date"], input[type="text"] { padding: 8px; margin: 4px 0; width: 200px; }
         .error { color: #c00; margin-bottom: 10px; }
         .btn { padding: 12px 24px; background: #007bff; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
         .btn:hover { background: #0056b3; }
@@ -49,11 +49,11 @@ $totalPrice = $pricePerNight * $nights;
             <input type="hidden" name="room_id" value="<?= (int)($room['id'] ?? 0) ?>">
             <p>
                 <label>Check-in</label>
-                <input type="datetime-local" name="check_in" value="<?= htmlspecialchars($checkIn) ?>" required>
+                <input type="date" name="check_in" value="<?= htmlspecialchars($checkIn) ?>" required>
             </p>
             <p>
                 <label>Check-out</label>
-                <input type="datetime-local" name="check_out" value="<?= htmlspecialchars($checkOut) ?>" required>
+                <input type="date" name="check_out" value="<?= htmlspecialchars($checkOut) ?>" required>
             </p>
             <div class="summary">
                 <strong>Tạm tính:</strong> <?= $nights ?> đêm × <?= number_format($pricePerNight) ?> VND = <strong><?= number_format($totalPrice) ?> VND</strong>

@@ -1,72 +1,64 @@
-<?php
-$roomTypes = $roomTypes ?? [];
-$addons = $addons ?? [];
-$baseUrl = rtrim(APP_URL ?? '', '/');
-?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xem phòng - Booking Hotel</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: sans-serif; margin: 0; background: #f5f5f5; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { color: #333; }
-        .nav { margin-bottom: 20px; }
-        .nav a { color: #007bff; text-decoration: none; margin-right: 15px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .card-img { height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 48px; }
-        .card-body { padding: 16px; }
-        .card-title { margin: 0 0 8px; font-size: 18px; }
-        .card-meta { color: #666; font-size: 14px; margin-bottom: 8px; }
-        .card-price { font-size: 20px; font-weight: bold; color: #2d8a3e; }
-        .card-addons { font-size: 12px; color: #888; margin-top: 8px; }
-        .btn { display: inline-block; margin-top: 12px; padding: 10px 20px; background: #007bff; color: #fff; text-decoration: none; border-radius: 6px; }
-        .btn:hover { background: #0056b3; }
-        .addon-list { margin: 20px 0; padding: 15px; background: #e7f3ff; border-radius: 8px; }
-        .addon-list h3 { margin-top: 0; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="nav">
-            <a href="<?= $baseUrl ?>/">Trang chủ</a>
-            <a href="<?= $baseUrl ?>/rooms/search">Tìm phòng</a>
-        </div>
-        <h1>Loại phòng</h1>
-        <p>Chọn loại phòng và ngày ở để tìm phòng còn trống.</p>
+<div class="container" style="padding-top: 120px;">
+    <div class="section-header">
+        <span class="section-subtitle">Phòng nghỉ</span>
+        <h2 class="section-title">Các Loại Phòng Của Chúng Tôi</h2>
+        <p class="section-desc">Khám phá không gian nghỉ dưỡng đa dạng hỗ trợ đầy đủ tiện nghi hiện đại</p>
+    </div>
 
-        <?php if (!empty($addons)): ?>
-        <div class="addon-list">
-            <h3>Dịch vụ addon (đi kèm)</h3>
-            <ul>
+    <!-- Addons Info -->
+    <?php if (!empty($addons)): ?>
+        <div
+            style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 40px; border: 1px solid #eee; display: flex; align-items: center; gap: 20px;">
+            <div style="font-size: 1.5rem;"><i class="fa-solid fa-gift"></i></div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                 <?php foreach ($addons as $a): ?>
-                    <li><?= htmlspecialchars($a['name'] ?? '') ?> - <?= number_format((float)($a['price'] ?? 0)) ?> VND</li>
+                    <span style="font-size: 0.9rem; color: #666;">
+                        <strong><?= htmlspecialchars($a['name']) ?>:</strong> <?= number_format($a['price'], 0, ',', '.') ?>đ
+                    </span>
                 <?php endforeach; ?>
-            </ul>
+            </div>
         </div>
-        <?php endif; ?>
+    <?php endif; ?>
 
-        <div class="grid">
-            <?php foreach ($roomTypes as $rt): ?>
-            <div class="card">
-                <div class="card-img" title="Hình ảnh loại phòng (có thể thêm cột image_url vào room_types)">🛏</div>
-                <div class="card-body">
-                    <h2 class="card-title"><?= htmlspecialchars($rt['name'] ?? '') ?></h2>
-                    <div class="card-meta">Sức chứa: <?= (int)($rt['capacity'] ?? 0) ?> người</div>
-                    <div class="card-price"><?= number_format((float)($rt['base_price'] ?? 0)) ?> VND / đêm</div>
-                    <div class="card-addons">Dịch vụ addon: xem bảng trên</div>
-                    <a href="<?= $baseUrl ?>/rooms/search?room_type_id=<?= (int)($rt['id'] ?? 0) ?>" class="btn">Tìm phòng trống</a>
+    <div class="rooms-grid">
+        <?php foreach ($roomTypes as $rt): ?>
+            <div class="room-card">
+                <div class="room-image">
+                    <img src="<?= htmlspecialchars($rt['image_path'] ?? '/assets/image/image.png') ?>"
+                        alt="<?= htmlspecialchars($rt['name']) ?>">
+                    <?php if ($rt['base_price'] > 5000000): ?>
+                        <span class="room-badge">Luxury</span>
+                    <?php elseif ($rt['base_price'] > 2000000): ?>
+                        <span class="room-badge">Premium</span>
+                    <?php endif; ?>
+                </div>
+                <div class="room-content">
+                    <h2 class="room-title"><?= htmlspecialchars($rt['name']) ?></h2>
+                    <p
+                        style="color: #666; font-size: 0.9rem; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.7rem;">
+                        <?= htmlspecialchars($rt['description']) ?>
+                    </p>
+                    <div class="room-amenities">
+                        <span><i class="fa-solid fa-users"></i> <?= $rt['capacity'] ?> Khách</span>
+                        <span><i class="fa-solid fa-expand"></i> <?= $rt['size_m2'] ?>m²</span>
+                        <span><i class="fa-solid fa-bed"></i> <?= $rt['capacity'] > 1 ? 'King Bed' : 'Single Bed' ?></span>
+                    </div>
+                    <div class="room-price">
+                        <span class="amount"><?= number_format($rt['base_price'], 0, ',', '.') ?>đ</span>
+                        <span class="period">/ đêm</span>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <a href="/rooms/search?room_type_id=<?= $rt['id'] ?>" class="btn btn-primary"
+                            style="width: 100%; border-radius: 8px;">Tìm Phòng Trống</a>
+                    </div>
                 </div>
             </div>
-            <?php endforeach; ?>
-        </div>
-        <?php if (empty($roomTypes)): ?>
-            <p>Chưa có loại phòng.</p>
-        <?php endif; ?>
+        <?php endforeach; ?>
     </div>
-</body>
-</html>
+
+    <?php if (empty($roomTypes)): ?>
+        <div style="text-align: center; padding: 50px; background: #fff; border-radius: 15px; border: 1px solid #eee;">
+            <p style="font-size: 1.2rem; color: #666;">Hiện tại chưa có loại phòng nào được đăng ký.</p>
+        </div>
+    <?php endif; ?>
+</div>

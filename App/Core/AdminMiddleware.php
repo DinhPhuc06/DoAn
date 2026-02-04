@@ -2,7 +2,11 @@
 
 namespace App\Core;
 
-
+/**
+ * Admin Middleware - Chỉ cho phép admin (session admin_user).
+ * Chặn: guest và user frontend (session user) truy cập URL admin.
+ * Đảm bảo user thường không truy cập được admin.php.
+ */
 class AdminMiddleware extends Middleware
 {
     protected string $adminLoginUrl = '/admin.php';

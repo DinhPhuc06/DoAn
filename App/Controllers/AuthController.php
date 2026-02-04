@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Auth;
 use App\Core\Session;
-use App\Service\AuthService;
+use App\Models\User;
 use function App\Core\url;
 
 /**
@@ -14,13 +14,13 @@ use function App\Core\url;
  */
 class AuthController extends Controller
 {
-    private AuthService $authService;
+    private User $userModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->viewPath = BASE_PATH . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Views';
-        $this->authService = new AuthService();
+        $this->userModel = new User();
     }
 
     /** GET: Form đăng nhập */
@@ -43,9 +43,16 @@ class AuthController extends Controller
             $this->redirect(url('/login?error=empty'));
             return;
         }
-        $user = $this->authService->attemptFrontend($email, $password);
-        if ($user) {
-            Auth::setUser($user);
+        $users = $this->userModel->getAll();
+        $found = null;
+        foreach ($users as $u) {
+            if (isset($u['email']) && strcasecmp($u['email'], $email) === 0) {
+                $found = $u;
+                break;
+            }
+        }
+        if ($found && password_verify($password, $found['password'] ?? '')) {
+            Auth::setUser($found);
             $intended = Session::getFlash('_intended');
             $this->redirect($intended ?: url('/'));
             return;

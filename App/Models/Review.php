@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Model;
 
+/** Model Review - Bảng reviews. CRUD: getAll, findById, create, update, delete. */
 class Review extends Model
 {
     protected string $table = 'reviews';

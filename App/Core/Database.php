@@ -5,7 +5,10 @@ namespace App\Core;
 use PDO;
 use PDOException;
 
-
+/**
+ * Class Database - Kết nối PDO singleton chuẩn MVC
+ * Load cấu hình từ Config/database.php và cung cấp getConnection() cho Model
+ */
 class Database
 {
     private static ?Database $instance = null;
@@ -24,7 +27,9 @@ class Database
         $this->connect();
     }
 
-
+    /**
+     * Lấy instance duy nhất của Database
+     */
     public static function getInstance(): self
     {
         if (self::$instance === null) {
@@ -33,6 +38,9 @@ class Database
         return self::$instance;
     }
 
+    /**
+     * Tạo kết nối PDO
+     */
     private function connect(): void
     {
         $dsn = sprintf(
@@ -58,16 +66,22 @@ class Database
         }
     }
 
-
+    /**
+     * Trả về đối tượng PDO để Model sử dụng (query, prepare, ...)
+     */
     public function getConnection(): PDO
     {
         return $this->pdo;
     }
 
-
+    /**
+     * Ngăn clone
+     */
     private function __clone() {}
 
-
+    /**
+     * Ngăn unserialize
+     */
     public function __wakeup()
     {
         throw new PDOException('Cannot unserialize singleton');
