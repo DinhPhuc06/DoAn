@@ -119,14 +119,7 @@ $roomTotalPrice = $pricePerNight * $nights;
             transform: translateY(-2px);
         }
 
-        /* Addons Section */
-        .addons-section {
-            margin: 24px 0;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 12px;
-            border: 2px solid #e2e8f0;
-        }
+
 
         .addons-section h3 {
             margin: 0 0 16px 0;
@@ -199,7 +192,7 @@ $roomTotalPrice = $pricePerNight * $nights;
             outline: none;
         }
 
-        /* Summary Section */
+
         .summary {
             margin: 24px 0;
             padding: 20px;
@@ -276,7 +269,7 @@ $roomTotalPrice = $pricePerNight * $nights;
                 </div>
             </div>
 
-            <!-- Addon Services Section -->
+
             <?php if (!empty($addons)): ?>
                 <div class="addons-section">
                     <h3><i class="fa-solid fa-concierge-bell" style="color: var(--secondary);"></i> Dịch vụ thêm</h3>
@@ -345,7 +338,7 @@ $roomTotalPrice = $pricePerNight * $nights;
         }
 
         function updateTotal() {
-            // Calculate nights
+
             const checkIn = document.getElementById('check_in').value;
             const checkOut = document.getElementById('check_out').value;
             let nights = 1;
@@ -355,11 +348,11 @@ $roomTotalPrice = $pricePerNight * $nights;
             }
             document.getElementById('nights').textContent = nights;
 
-            // Room total
+
             const roomTotal = pricePerNight * nights;
             document.getElementById('room-total').textContent = formatNumber(roomTotal);
 
-            // Addon total
+
             let addonTotal = 0;
             document.querySelectorAll('.addon-checkbox:checked').forEach(checkbox => {
                 const id = checkbox.dataset.id;
@@ -376,7 +369,7 @@ $roomTotalPrice = $pricePerNight * $nights;
                 addonSummary.style.display = 'none';
             }
 
-            // Grand total
+
             const grandTotal = roomTotal + addonTotal;
             document.getElementById('grand-total').textContent = formatNumber(grandTotal) + ' VND';
         }
@@ -385,7 +378,7 @@ $roomTotalPrice = $pricePerNight * $nights;
             return new Intl.NumberFormat('vi-VN').format(num);
         }
 
-        // Update on date change
+
         document.getElementById('check_in').addEventListener('change', updateTotal);
         document.getElementById('check_out').addEventListener('change', updateTotal);
     </script>

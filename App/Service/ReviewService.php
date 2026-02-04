@@ -5,9 +5,6 @@ namespace App\Service;
 use App\Models\Review;
 use PDO;
 
-/**
- * ReviewService - Xử lý logic nghiệp vụ cho đánh giá phòng
- */
 class ReviewService
 {
     private Review $reviewModel;
@@ -17,31 +14,16 @@ class ReviewService
         $this->reviewModel = new Review();
     }
 
-    /**
-     * Lấy danh sách reviews theo room_type_id
-     * @param int $roomTypeId
-     * @return array
-     */
     public function getReviewsByRoomTypeId(int $roomTypeId): array
     {
         return $this->reviewModel->getByRoomTypeId($roomTypeId);
     }
 
-    /**
-     * Tính rating trung bình theo room_type_id
-     * @param int $roomTypeId
-     * @return float|null
-     */
     public function getAverageRating(int $roomTypeId): ?float
     {
         return $this->reviewModel->getAverageByRoomTypeId($roomTypeId);
     }
 
-    /**
-     * Tạo review mới
-     * @param array $data [user_id, room_id, rating, comment]
-     * @return array{success: bool, error?: string, review_id?: int}
-     */
     public function createReview(array $data): array
     {
         // Validate required fields
@@ -70,12 +52,6 @@ class ReviewService
         return ['success' => false, 'error' => 'create_failed'];
     }
 
-    /**
-     * Kiểm tra user đã review room_type này chưa
-     * @param int $userId
-     * @param int $roomTypeId
-     * @return bool
-     */
     public function hasUserReviewedRoomType(int $userId, int $roomTypeId): bool
     {
         return $this->reviewModel->hasUserReviewedRoomType($userId, $roomTypeId);

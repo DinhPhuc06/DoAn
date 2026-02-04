@@ -8,9 +8,6 @@ use App\Service\ReviewService;
 use App\Models\Room;
 use function App\Core\url;
 
-/**
- * ReviewController - Xử lý đánh giá phòng
- */
 class ReviewController extends Controller
 {
     private ReviewService $reviewService;
@@ -24,9 +21,6 @@ class ReviewController extends Controller
         $this->roomModel = new Room();
     }
 
-    /**
-     * POST: Tạo review mới
-     */
     public function store(): void
     {
         if (!$this->isPost()) {

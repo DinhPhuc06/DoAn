@@ -10,10 +10,6 @@ use App\Models\RoomType;
 use App\Service\BookingService;
 use function App\Core\url;
 
-/**
- * BOOKING FLOW - Controller chỉ: tiếp nhận request, gọi service, xử lý kết quả (redirect/render).
- * Validate và transaction nằm trong Service/BookingService.
- */
 class BookingController extends Controller
 {
     private Room $roomModel;
@@ -29,9 +25,6 @@ class BookingController extends Controller
         $this->bookingService = new BookingService();
     }
 
-    /**
-     * Form đặt phòng: room_id, check_in, check_out (từ URL)
-     */
     public function form(): void
     {
         $roomId = (int) $this->input('room_id');
@@ -51,7 +44,6 @@ class BookingController extends Controller
 
         $roomType = $this->roomTypeModel->findById($room['room_type_id'] ?? 0);
 
-        // Get addon services
         $serviceModel = new \App\Models\Service();
         $addons = $serviceModel->getAddons();
 
@@ -65,9 +57,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * POST: Tiếp nhận request → gọi service → xử lý kết quả (redirect)
-     */
     public function store(): void
     {
         if (!$this->isPost()) {
@@ -82,7 +71,6 @@ class BookingController extends Controller
             return;
         }
 
-        // Parse addon services from form
         $addonsInput = $_POST['addons'] ?? [];
         $addons = [];
         foreach ($addonsInput as $serviceId => $data) {
@@ -117,9 +105,6 @@ class BookingController extends Controller
         $this->redirect(url('/booking/form?' . $query));
     }
 
-    /**
-     * Trang thành công sau khi tạo booking (hiển thị status flow, bước thanh toán)
-     */
     public function success(): void
     {
         $bookingId = (int) $this->input('id');

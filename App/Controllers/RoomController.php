@@ -101,17 +101,14 @@ class RoomController extends Controller
             return;
         }
 
-        // Get reviews and rating data
         $reviewService = new \App\Service\ReviewService();
         $reviews = $reviewService->getReviewsByRoomTypeId($id);
         $avgRating = $reviewService->getAverageRating($id);
         $reviewCount = count($reviews);
 
-        // Get first room_id for review form
         $reviewModel = new \App\Models\Review();
         $defaultRoomId = $reviewModel->getFirstRoomIdByType($id);
 
-        // Check if current user already reviewed
         $userId = \App\Core\Auth::user()['id'] ?? null;
         $userHasReviewed = $userId ? $reviewService->hasUserReviewedRoomType($userId, $id) : false;
 

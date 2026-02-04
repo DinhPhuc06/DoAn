@@ -68,11 +68,6 @@ class BookingService
         return empty($overlaps);
     }
 
-    /**
-     * Parse datetime input từ UI/URL sang DB datetime.
-     * Chấp nhận: `Y-m-d\TH:i` (datetime-local), `Y-m-d H:i`, `Y-m-d H:i:s`.
-     * @return array{ok: bool, db: string, local: string}
-     */
     private function parseDateTimeInput(string $value): array
     {
         $value = trim($value);
@@ -105,21 +100,6 @@ class BookingService
     }
 
 
-    /**
-     * Validate input tạo booking.
-     * Thành công: trả về payload chuẩn hoá.
-     * Lỗi: ném BookingException với errorCode chuẩn ('missing', 'dates', 'unauthorized', 'room_not_found').
-     *
-     * @return array{
-     *   user_id:int,
-     *   room_id:int,
-     *   check_in:string,
-     *   check_out:string,
-     *   total_price:float,
-     *   check_in_local:string,
-     *   check_out_local:string
-     * }
-     */
     public function validateCreateInput(int $user_id, int $room_id, string $check_in, string $check_out): array
     {
         $in = $this->parseDateTimeInput($check_in);
@@ -155,11 +135,6 @@ class BookingService
     }
 
 
-    /**
-     * Tạo booking từ request.
-     * - Thành công: trả về array{success: true, booking_id: int}
-     * - Lỗi: trả về array{success: false, error: string}
-     */
     public function createBookingFromRequest(array $data): array
     {
         $user_id = (int) ($data['user_id'] ?? 0);
@@ -169,13 +144,13 @@ class BookingService
         $addons = $data['addons'] ?? [];
 
         try {
-            // Validate & chuẩn hoá dữ liệu – ném BookingException nếu lỗi
+
             $payload = $this->validateCreateInput($user_id, $room_id, $check_in, $check_out);
             $check_in = $payload['check_in'];
             $check_out = $payload['check_out'];
             $room_total_price = $payload['total_price'];
 
-            // Calculate addon services total
+
             $addon_total = 0;
             $addonDetails = [];
             if (!empty($addons)) {
@@ -204,7 +179,7 @@ class BookingService
 
             $this->pdo->beginTransaction();
 
-            // 1) LOCK room row (chống race): mọi booking cùng room_id sẽ serialize
+
             $lockRoom = $this->pdo->prepare("SELECT id FROM room_details WHERE id = ? FOR UPDATE");
             $lockRoom->execute([$room_id]);
             $locked = $lockRoom->fetch(PDO::FETCH_ASSOC);
@@ -213,14 +188,14 @@ class BookingService
                 return ['success' => false, 'error' => 'room_not_found'];
             }
 
-            // 2) Check availability (interval overlap) theo datetime
+
             $overlaps = $this->getOverlappingBookings($room_id, $check_in, $check_out, null, false);
             if (!empty($overlaps)) {
                 $this->pdo->rollBack();
                 return ['success' => false, 'error' => 'unavailable'];
             }
 
-            // 3. Insert booking (status theo luồng: mới tạo = pending, chờ thanh toán)
+
             $bookingId = $this->bookingModel->create([
                 'user_id' => $user_id,
                 'check_in' => $check_in,
@@ -234,7 +209,7 @@ class BookingService
                 return ['success' => false, 'error' => 'create_failed'];
             }
 
-            // 4. Insert booking_details
+
             $detailId = $this->bookingDetailModel->create([
                 'booking_id' => $bookingId,
                 'room_id' => $room_id,
@@ -245,7 +220,7 @@ class BookingService
                 return ['success' => false, 'error' => 'create_failed'];
             }
 
-            // 5. Insert booking_service records
+
             if (!empty($addonDetails)) {
                 $bookingServiceModel = new \App\Models\BookingServiceItem();
                 foreach ($addonDetails as $addonData) {
@@ -273,11 +248,6 @@ class BookingService
     }
 
 
-    /**
-     * Chuẩn hoá flow thay đổi status booking.
-     * - Mọi thay đổi status phải đi qua đây.
-     * - Lỗi: ném BookingException với errorCode ('not_found', 'invalid_transition').
-     */
     public function updateStatus(int $bookingId, string $newStatus, ?string $paymentMethod = null, ?string $paymentAt = null): bool
     {
         $booking = $this->bookingModel->findById($bookingId);
