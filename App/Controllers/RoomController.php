@@ -100,9 +100,26 @@ class RoomController extends Controller
             $this->redirect(url('/rooms'));
             return;
         }
+
+        $reviewService = new \App\Service\ReviewService();
+        $reviews = $reviewService->getReviewsByRoomTypeId($id);
+        $avgRating = $reviewService->getAverageRating($id);
+        $reviewCount = count($reviews);
+
+        $reviewModel = new \App\Models\Review();
+        $defaultRoomId = $reviewModel->getFirstRoomIdByType($id);
+
+        $userId = \App\Core\Auth::user()['id'] ?? null;
+        $userHasReviewed = $userId ? $reviewService->hasUserReviewedRoomType($userId, $id) : false;
+
         $this->useLayout = true;
         $this->render('Room/type-detail', [
             'roomType' => $roomType,
+            'reviews' => $reviews,
+            'avgRating' => $avgRating,
+            'reviewCount' => $reviewCount,
+            'defaultRoomId' => $defaultRoomId,
+            'userHasReviewed' => $userHasReviewed,
             'title' => $roomType['name'] . ' - Booking Hotel',
         ]);
     }

@@ -10,10 +10,6 @@ use App\Models\RoomType;
 use App\Service\BookingService;
 use function App\Core\url;
 
-/**
- * BOOKING FLOW - Controller chỉ: tiếp nhận request, gọi service, xử lý kết quả (redirect/render).
- * Validate và transaction nằm trong Service/BookingService.
- */
 class BookingController extends Controller
 {
     private Room $roomModel;
@@ -29,9 +25,6 @@ class BookingController extends Controller
         $this->bookingService = new BookingService();
     }
 
-    /**
-     * Form đặt phòng: room_id, check_in, check_out (từ URL)
-     */
     public function form(): void
     {
         $roomId = (int) $this->input('room_id');
@@ -50,18 +43,20 @@ class BookingController extends Controller
         }
 
         $roomType = $this->roomTypeModel->findById($room['room_type_id'] ?? 0);
+
+        $serviceModel = new \App\Models\Service();
+        $addons = $serviceModel->getAddons();
+
         $this->useLayout = false;
         $this->render('Booking/form', [
-            'room'     => $room,
+            'room' => $room,
             'roomType' => $roomType,
-            'checkIn'  => $checkIn,
+            'checkIn' => $checkIn,
             'checkOut' => $checkOut,
+            'addons' => $addons,
         ]);
     }
 
-    /**
-     * POST: Tiếp nhận request → gọi service → xử lý kết quả (redirect)
-     */
     public function store(): void
     {
         if (!$this->isPost()) {
@@ -76,11 +71,23 @@ class BookingController extends Controller
             return;
         }
 
+        $addonsInput = $_POST['addons'] ?? [];
+        $addons = [];
+        foreach ($addonsInput as $serviceId => $data) {
+            if (!empty($data['selected'])) {
+                $addons[] = [
+                    'service_id' => (int) $serviceId,
+                    'quantity' => max(1, (int) ($data['qty'] ?? 1)),
+                ];
+            }
+        }
+
         $result = $this->bookingService->createBookingFromRequest([
-            'user_id'   => $userId,
-            'room_id'   => $this->input('room_id'),
-            'check_in'  => $this->input('check_in'),
+            'user_id' => $userId,
+            'room_id' => $this->input('room_id'),
+            'check_in' => $this->input('check_in'),
             'check_out' => $this->input('check_out'),
+            'addons' => $addons,
         ]);
 
         if ($result['success']) {
@@ -98,9 +105,6 @@ class BookingController extends Controller
         $this->redirect(url('/booking/form?' . $query));
     }
 
-    /**
-     * Trang thành công sau khi tạo booking (hiển thị status flow, bước thanh toán)
-     */
     public function success(): void
     {
         $bookingId = (int) $this->input('id');
@@ -108,7 +112,7 @@ class BookingController extends Controller
         $this->useLayout = false;
         $this->render('Booking/success', [
             'bookingId' => $bookingId,
-            'booking'   => $booking,
+            'booking' => $booking,
         ]);
     }
 }
