@@ -25,10 +25,20 @@ class RoomType extends Model
      */
     public function getAllWithImages(): array
     {
+        // Ưu tiên:
+        // 1. Ảnh của RoomType (room_id IS NULL) có is_primary = 1
+        // 2. Ảnh của Room bất kỳ thuộc Type đó có is_primary = 1
+        // 3. Ảnh mới nhất của RoomType
+        // 4. Ảnh mới nhất của Room bất kỳ thuộc Type đó
         $sql = "
-            SELECT rt.*, ri.image_path 
+            SELECT rt.*, 
+                   COALESCE(
+                       (SELECT image_path FROM room_images WHERE room_type_id = rt.id AND room_id IS NULL AND is_primary = 1 LIMIT 1),
+                       (SELECT image_path FROM room_images WHERE room_type_id = rt.id AND room_id IS NOT NULL AND is_primary = 1 ORDER BY id DESC LIMIT 1),
+                       (SELECT image_path FROM room_images WHERE room_type_id = rt.id AND room_id IS NULL ORDER BY id DESC LIMIT 1),
+                       (SELECT image_path FROM room_images WHERE room_type_id = rt.id ORDER BY id DESC LIMIT 1)
+                   ) as image_path
             FROM `{$this->table}` rt
-            LEFT JOIN `room_images` ri ON rt.id = ri.room_type_id AND ri.is_primary = 1
         ";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -44,8 +54,13 @@ class RoomType extends Model
         if (!$roomType)
             return null;
 
-        // Lấy ảnh
-        $sqlImages = "SELECT image_path, is_primary FROM `room_images` WHERE room_type_id = ?";
+        // Lấy ảnh: Ưu tiên ảnh của Loại phòng trước, sau đó đến ảnh của từng Phòng cụ thể
+        $sqlImages = "
+            SELECT image_path, is_primary, room_id 
+            FROM `room_images` 
+            WHERE room_type_id = ? 
+            ORDER BY (room_id IS NULL) DESC, is_primary DESC, id DESC
+        ";
         $stmtImages = $this->pdo->prepare($sqlImages);
         $stmtImages->execute([$id]);
         $roomType['images'] = $stmtImages->fetchAll(\PDO::FETCH_ASSOC) ?: [];

@@ -21,7 +21,7 @@
 
     .type-detail-hero-content {
         position: absolute;
-        bottom: 40px;
+        bottom: 120px;
         left: 0;
         right: 0;
         z-index: 10;
@@ -58,6 +58,77 @@
         margin-top: -80px;
         position: relative;
         z-index: 20;
+    }
+
+    /* Styles cho gallery nằm giữa nội dung */
+    .mid-content-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        margin: 30px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+    }
+
+    .mid-content-gallery img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 10px;
+        cursor: zoom-in;
+        transition: transform 0.3s ease;
+    }
+
+    .mid-content-gallery img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Lightbox Modal */
+    .lightbox-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .lightbox-modal.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .lightbox-content {
+        max-width: 90%;
+        max-height: 90vh;
+        border-radius: 10px;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+
+    .lightbox-modal.active .lightbox-content {
+        transform: scale(1);
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: #fff;
+        font-size: 3rem;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .lightbox-close:hover {
+        color: var(--primary);
     }
 
     .type-info-card {
@@ -181,17 +252,6 @@ if (!empty($roomType['images'])) {
                     </span>
                 <?php endif; ?>
             </h1>
-
-
-            <?php if (!empty($roomType['images']) && count($roomType['images']) > 1): ?>
-                <div class="type-detail-gallery">
-                    <?php foreach ($roomType['images'] as $index => $img): ?>
-                        <img src="<?= htmlspecialchars($img['image_path']) ?>" alt="Gallery <?= $index + 1 ?>"
-                            onclick="document.getElementById('mainImage').src = this.src; document.querySelectorAll('.type-detail-gallery img').forEach(i => i.classList.remove('active')); this.classList.add('active');"
-                            class="<?= $img['is_primary'] ? 'active' : '' ?>">
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -232,6 +292,16 @@ if (!empty($roomType['images'])) {
             </div>
 
 
+            <?php if (!empty($roomType['images'])): ?>
+                <div class="mid-content-gallery">
+                    <?php foreach ($roomType['images'] as $index => $img): ?>
+                        <img src="<?= htmlspecialchars($img['image_path']) ?>" alt="Gallery <?= $index + 1 ?>"
+                            onclick="openLightbox(this.src)">
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
+
             <div style="margin-bottom: 30px;">
                 <h3 style="margin-bottom: 15px; color: var(--dark);"><i class="fa-solid fa-info-circle"
                         style="color: var(--primary); margin-right: 10px;"></i>Mô Tả Phòng</h3>
@@ -257,6 +327,9 @@ if (!empty($roomType['images'])) {
                     <p style="color: #666;">Thông tin tiện nghi đang được cập nhật.</p>
                 <?php endif; ?>
             </div>
+        </div>
+
+        <!-- Right: Booking Sidebar -->
         <div class="type-booking-card">
             <div style="text-align: center; margin-bottom: 25px;">
                 <span style="font-size: 0.9rem; color: #666;">Giá chỉ từ</span>
@@ -299,7 +372,7 @@ if (!empty($roomType['images'])) {
                 </div>
             </div>
         </div>
-    </div>
+    </div> <!-- Close Grid -->
 
 
     <div id="reviews" style="margin-top: 60px;">
@@ -374,7 +447,8 @@ if (!empty($roomType['images'])) {
                                 </div>
                             </div>
                             <p style="color: #555; line-height: 1.6; margin: 0;">
-                                <?= nl2br(htmlspecialchars($review['comment'] ?? '')) ?></p>
+                                <?= nl2br(htmlspecialchars($review['comment'] ?? '')) ?>
+                            </p>
                             <div style="color: #999; font-size: 0.8rem; margin-top: 10px;">
                                 <i class="fa-regular fa-clock"></i>
                                 <?= date('d/m/Y H:i', strtotime($review['created_at'] ?? 'now')) ?>
@@ -483,3 +557,34 @@ if (!empty($roomType['images'])) {
         </div>
     </div>
 </div>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="lightbox-modal" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img class="lightbox-content" id="lightbox-img">
+</div>
+
+<script>
+    function openLightbox(src) {
+        const modal = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        img.src = src;
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        const modal = document.getElementById('lightbox');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+        document.body.style.overflow = '';
+    }
+
+    // Đóng bằng phím Esc
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+    });
+</script>
