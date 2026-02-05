@@ -77,7 +77,9 @@ CREATE TABLE `room_details` (
   `id` int(11) NOT NULL,
   `room_type_id` int(11) NOT NULL,
   `room_number` varchar(20) DEFAULT NULL,
-  `status` enum('available','booked','maintenance') DEFAULT 'available'
+  `floor` int(11) DEFAULT NULL,
+  `status` enum('available','booked','maintenance') DEFAULT 'available',
+  `image_path` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -94,6 +96,7 @@ CREATE TABLE `room_types` (
 CREATE TABLE `room_images` (
   `id` int(11) NOT NULL,
   `room_type_id` int(11) NOT NULL,
+  `room_id` int(11) DEFAULT NULL,
   `image_path` varchar(255) NOT NULL,
   `is_primary` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -204,7 +207,8 @@ ALTER TABLE `users`
 
 ALTER TABLE `room_images`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `room_type_id` (`room_type_id`);
+  ADD KEY `room_type_id` (`room_type_id`),
+  ADD KEY `room_id` (`room_id`);
 
 ALTER TABLE `amenities`
   ADD PRIMARY KEY (`id`);
@@ -309,7 +313,8 @@ ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`);
 
 ALTER TABLE `room_images`
-  ADD CONSTRAINT `room_images_ibfk_1` FOREIGN KEY (`room_type_id`) REFERENCES `room_types` (`id`);
+  ADD CONSTRAINT `room_images_ibfk_1` FOREIGN KEY (`room_type_id`) REFERENCES `room_types` (`id`),
+  ADD CONSTRAINT `room_images_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room_details` (`id`);
 
 ALTER TABLE `room_type_amenities`
   ADD CONSTRAINT `rta_ibfk_1` FOREIGN KEY (`room_type_id`) REFERENCES `room_types` (`id`),
@@ -359,20 +364,20 @@ INSERT INTO `room_type_amenities` (`room_type_id`, `amenity_id`) VALUES
 (5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6);
 
 -- 3.3 Room Images
-INSERT INTO `room_images` (`room_type_id`, `image_path`, `is_primary`) VALUES
-(1, '/assets/image/standard_single.jpg', 1),
-(2, '/assets/image/standard_double.jpg', 1),
-(3, '/assets/image/image.png', 1),
-(4, '/assets/image/family_suite.jpg', 1),
-(5, '/assets/image/presidential.jpg', 1);
+INSERT INTO `room_images` (`room_type_id`, `room_id`, `image_path`, `is_primary`) VALUES
+(1, NULL, '/assets/image/standard_single.jpg', 1),
+(2, NULL, '/assets/image/standard_double.jpg', 1),
+(3, NULL, '/assets/image/image.png', 1),
+(4, NULL, '/assets/image/family_suite.jpg', 1),
+(5, NULL, '/assets/image/presidential.jpg', 1);
 
 -- 4. Room Details
-INSERT INTO `room_details` (`room_type_id`, `room_number`, `status`) VALUES
-(1, '101', 'available'), (1, '102', 'available'), (1, '103', 'booked'), (1, '104', 'available'),
-(2, '201', 'available'), (2, '202', 'available'), (2, '203', 'available'), (2, '204', 'maintenance'),
-(3, '301', 'available'), (3, '302', 'available'), (3, '303', 'available'), (3, '304', 'available'), (3, '305', 'booked'),
-(4, '401', 'available'), (4, '402', 'available'), (4, '403', 'available'),
-(5, '501', 'available'), (5, '502', 'available');
+INSERT INTO `room_details` (`room_type_id`, `room_number`, `floor`, `status`, `image_path`) VALUES
+(1, '101', 1, 'available', NULL), (1, '102', 1, 'available', NULL), (1, '103', 1, 'booked', NULL), (1, '104', 1, 'available', NULL),
+(2, '201', 2, 'available', NULL), (2, '202', 2, 'available', NULL), (2, '203', 2, 'available', NULL), (2, '204', 2, 'maintenance', NULL),
+(3, '301', 3, 'available', NULL), (3, '302', 3, 'available', NULL), (3, '303', 3, 'available', NULL), (3, '304', 3, 'available', NULL), (3, '305', 3, 'booked', NULL),
+(4, '401', 4, 'available', NULL), (4, '402', 4, 'available', NULL), (4, '403', 4, 'available', NULL),
+(5, '501', 5, 'available', NULL), (5, '502', 5, 'available', NULL);
 
 -- 5. Services
 INSERT INTO `services` (`name`, `price`, `description`, `type`) VALUES
