@@ -10,6 +10,8 @@ class RoomController extends Controller
 {
     private Room $roomModel;
     private RoomType $roomTypeModel;
+    private \App\Models\RoomImage $roomImageModel;
+    private \App\Service\CloudinaryService $cloudinaryService;
 
     public function __construct()
     {
@@ -18,6 +20,8 @@ class RoomController extends Controller
         $this->layoutPath = BASE_PATH . '/App/Views/Layouts/admin-layout.php';
         $this->roomModel = new Room();
         $this->roomTypeModel = new RoomType();
+        $this->roomImageModel = new \App\Models\RoomImage();
+        $this->cloudinaryService = new \App\Service\CloudinaryService();
     }
 
     public function index(): void
@@ -47,19 +51,43 @@ class RoomController extends Controller
 
     public function store(): void
     {
+        $floorInput = $this->input('floor');
         $data = [
             'room_type_id' => $this->input('room_type_id'),
             'room_number' => $this->input('room_number'),
-            'floor' => $this->input('floor'),
+            'floor' => $floorInput !== '' ? (int) $floorInput : null,
             'status' => $this->input('status') ?? 'available',
         ];
-        $this->roomModel->create($data);
+
+        $id = $this->roomModel->create($data);
+
+        // Handle multiple image uploads
+        if ($id && !empty($_FILES['images']['tmp_name'][0])) {
+            foreach ($_FILES['images']['tmp_name'] as $index => $tmpName) {
+                if (empty($tmpName))
+                    continue;
+
+                $imageUrl = $this->cloudinaryService->upload($tmpName, 'rooms');
+                if ($imageUrl) {
+                    $this->roomImageModel->create([
+                        'room_type_id' => $data['room_type_id'],
+                        'room_id' => $id,
+                        'image_path' => $imageUrl,
+                        'is_primary' => ($index === 0) ? 1 : 0
+                    ]);
+                }
+            }
+        }
+
         $this->redirect('/admin/rooms');
     }
 
     public function edit(int $id): void
     {
         $room = $this->roomModel->findById($id);
+        if ($room) {
+            $room['images'] = $this->roomImageModel->getByRoomId($id);
+        }
         $roomTypes = $this->roomTypeModel->getAll();
         $this->useLayout = true;
         $this->render('Admin/rooms/form', [
@@ -73,13 +101,35 @@ class RoomController extends Controller
 
     public function update(int $id): void
     {
+        $floorInput = $this->input('floor');
         $data = [
             'room_type_id' => $this->input('room_type_id'),
             'room_number' => $this->input('room_number'),
-            'floor' => $this->input('floor'),
+            'floor' => $floorInput !== '' ? (int) $floorInput : null,
             'status' => $this->input('status'),
         ];
+
         $this->roomModel->update($id, $data);
+
+        // Handle multiple image uploads
+        if (!empty($_FILES['images']['tmp_name'][0])) {
+            foreach ($_FILES['images']['tmp_name'] as $index => $tmpName) {
+                if (empty($tmpName))
+                    continue;
+
+                $imageUrl = $this->cloudinaryService->upload($tmpName, 'rooms');
+                if ($imageUrl) {
+                    $existing = $this->roomImageModel->getByRoomId($id);
+                    $this->roomImageModel->create([
+                        'room_type_id' => $data['room_type_id'],
+                        'room_id' => $id,
+                        'image_path' => $imageUrl,
+                        'is_primary' => empty($existing) ? 1 : 0
+                    ]);
+                }
+            }
+        }
+
         $this->redirect('/admin/rooms');
     }
 

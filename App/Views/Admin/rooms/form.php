@@ -8,7 +8,8 @@
         </a>
     </div>
     <div class="admin-card-body">
-        <form action="<?= $room ? '/admin/rooms/' . $room['id'] . '/update' : '/admin/rooms/store' ?>" method="POST">
+        <form action="<?= $room ? '/admin/rooms/' . $room['id'] . '/update' : '/admin/rooms/store' ?>" 
+            method="POST" enctype="multipart/form-data">
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label>Số Phòng <span style="color: red;">*</span></label>
@@ -39,12 +40,27 @@
                     <label>Trạng Thái</label>
                     <select name="status" class="admin-form-control">
                         <option value="available" <?= ($room['status'] ?? 'available') === 'available' ? 'selected' : '' ?>>Có sẵn</option>
-                        <option value="occupied" <?= ($room['status'] ?? '') === 'occupied' ? 'selected' : '' ?>>Đang sử
-                            dụng</option>
-                        <option value="maintenance" <?= ($room['status'] ?? '') === 'maintenance' ? 'selected' : '' ?>>Bảo
-                            trì</option>
+                        <option value="booked" <?= ($room['status'] ?? '') === 'booked' ? 'selected' : '' ?>>Đã đặt</option>
+                        <option value="maintenance" <?= ($room['status'] ?? '') === 'maintenance' ? 'selected' : '' ?>>Bảo trì</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="admin-form-group">
+                <label>Ảnh Phòng (Chọn được nhiều ảnh - Tùy chọn)</label>
+                <input type="file" name="images[]" class="admin-form-control" accept="image/*" multiple>
+                <?php if (!empty($room['images'])): ?>
+                    <div style="margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                        <?php foreach ($room['images'] as $img): ?>
+                            <div style="position: relative; border-radius: 8px; overflow: hidden; border: 1px solid #ddd;">
+                                <img src="<?= htmlspecialchars($img['image_path']) ?>" alt="Room Image" style="width: 100%; height: 120px; object-fit: cover;">
+                                <?php if ($img['is_primary']): ?>
+                                    <span style="position: absolute; top: 5px; left: 5px; background: var(--primary); color: #fff; padding: 2px 6px; font-size: 0.75rem; border-radius: 4px;">Chính</span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div style="margin-top: 30px;">
