@@ -18,10 +18,17 @@
 ### 3. Controller Layer (Admin)
 
 - ✅ `App/Core/Controller.php` - Controller cha (render, redirect, input)
+<<<<<<< HEAD
 - ✅ `App/Controllers/Admin/` - Admin Controllers
 - ✅ 6 Admin Controllers CRUD đầy đủ:
   - UserController, RoomTypeController, RoomController
   - ServiceController, RevenueController, AuthController
+=======
+- ✅ `App/Controllers_Admin/AdminBaseController.php` - Base cho admin
+- ✅ 6 Admin Controllers CRUD đầy đủ:
+  - AdminCustomerController, AdminRoomTypeController, AdminRoomController
+  - AdminServiceController, AdminRevenueController, AdminAuthController
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
 
 ### 4. View Layer (Admin)
 

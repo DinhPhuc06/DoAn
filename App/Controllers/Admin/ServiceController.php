@@ -49,7 +49,11 @@ class ServiceController extends Controller
             'unit' => $this->input('unit'),
         ];
         $this->serviceModel->create($data);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/services'));
+=======
+        $this->redirect('/admin/services');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function edit(int $id): void
@@ -73,12 +77,20 @@ class ServiceController extends Controller
             'unit' => $this->input('unit'),
         ];
         $this->serviceModel->update($id, $data);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/services'));
+=======
+        $this->redirect('/admin/services');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function destroy(int $id): void
     {
         $this->serviceModel->delete($id);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/services'));
+=======
+        $this->redirect('/admin/services');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 }

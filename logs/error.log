@@ -40,6 +40,7 @@ Stack trace:
 #6 /Users/admin/Project/Web/DoAn/App/Core/Router.php(109): App\Core\Router::{closure:App\Core\Router::dispatch():84}()
 #7 /Users/admin/Project/Web/DoAn/Public/index.php(100): App\Core\Router::dispatch()
 #8 {main}
+<<<<<<< HEAD
 [2026-03-11 14:49:18] TypeError: App\Core\Router::get(): Argument #2 ($controller) must be of type string, Closure given, called in C:\xampp\htdocs\DoAn\Public\index.php on line 41 in C:\xampp\htdocs\DoAn\App\Core\Router.php:19
 Stack trace:
 #0 C:\xampp\htdocs\DoAn\Public\index.php(41): App\Core\Router::get('/', Object(Closure))
@@ -408,3 +409,5 @@ Stack trace:
 #5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
 #6 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
 #7 {main}
+=======
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3

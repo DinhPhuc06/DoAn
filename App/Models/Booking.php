@@ -70,6 +70,7 @@ class Booking extends Model
         $booking = $stmt->fetch(PDO::FETCH_ASSOC);
         return $booking ?: null;
     }
+<<<<<<< HEAD
     public function find($id)
     {
         $sql = "SELECT * FROM bookings WHERE id = :id LIMIT 1";
@@ -82,5 +83,7 @@ class Booking extends Model
 
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
+=======
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
 }
 

@@ -56,7 +56,11 @@ class UserController extends Controller
             'status' => $this->input('status') ?? 'active',
         ];
         $this->userModel->create($data);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/users'));
+=======
+        $this->redirect('/admin/users');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function edit(int $id): void
@@ -86,12 +90,20 @@ class UserController extends Controller
             $data['password'] = password_hash($this->input('password'), PASSWORD_DEFAULT);
         }
         $this->userModel->update($id, $data);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/users'));
+=======
+        $this->redirect('/admin/users');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function destroy(int $id): void
     {
         $this->userModel->delete($id);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/users'));
+=======
+        $this->redirect('/admin/users');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 }

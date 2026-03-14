@@ -9,7 +9,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="<?= \App\Core\asset('css/style.css') ?>">
+=======
+    <link rel="stylesheet" href="/assets/css/style.css">
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
 </head>
 
 <body>

@@ -54,7 +54,11 @@
     <div class="admin-card-header">
         <h2 class="admin-card-title"><i class="fa-solid fa-clock-rotate-left"
                 style="margin-right: 10px; color: var(--admin-primary);"></i>Đặt Phòng Gần Đây</h2>
+<<<<<<< HEAD
         <a href="<?= \App\Core\url('/admin/bookings') ?>" class="admin-btn admin-btn-outline admin-btn-sm">Xem tất cả</a>
+=======
+        <a href="/admin/bookings" class="admin-btn admin-btn-outline admin-btn-sm">Xem tất cả</a>
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     </div>
     <div class="admin-card-body" style="padding: 0;">
         <table class="admin-table">
@@ -133,6 +137,7 @@
     </div>
     <div class="admin-card-body">
         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+<<<<<<< HEAD
             <a href="<?= \App\Core\url('/admin/users/create') ?>" class="admin-btn admin-btn-primary">
                 <i class="fa-solid fa-user-plus"></i> Thêm người dùng
             </a>
@@ -143,6 +148,18 @@
                 <i class="fa-solid fa-door-open"></i> Thêm phòng
             </a>
             <a href="<?= \App\Core\url('/admin/services/create') ?>" class="admin-btn admin-btn-outline">
+=======
+            <a href="/admin/users/create" class="admin-btn admin-btn-primary">
+                <i class="fa-solid fa-user-plus"></i> Thêm người dùng
+            </a>
+            <a href="/admin/room-types/create" class="admin-btn admin-btn-success">
+                <i class="fa-solid fa-plus"></i> Thêm loại phòng
+            </a>
+            <a href="/admin/rooms/create" class="admin-btn admin-btn-outline">
+                <i class="fa-solid fa-door-open"></i> Thêm phòng
+            </a>
+            <a href="/admin/services/create" class="admin-btn admin-btn-outline">
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                 <i class="fa-solid fa-concierge-bell"></i> Thêm dịch vụ
             </a>
         </div>

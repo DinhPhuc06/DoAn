@@ -3,14 +3,22 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+<<<<<<< HEAD
 use App\Core\BookingException;
 use App\Service\BookingService;
 use App\Models\Booking;
+=======
+use App\Models\Booking;
+use PDO;
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
 
 class BookingController extends Controller
 {
     private Booking $bookingModel;
+<<<<<<< HEAD
     private BookingService $bookingService;
+=======
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
 
     public function __construct()
     {
@@ -18,7 +26,10 @@ class BookingController extends Controller
         $this->viewPath = BASE_PATH . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Views';
         $this->layoutPath = BASE_PATH . '/App/Views/Layouts/admin-layout.php';
         $this->bookingModel = new Booking();
+<<<<<<< HEAD
         $this->bookingService = new BookingService();
+=======
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function index(): void
@@ -47,6 +58,7 @@ class BookingController extends Controller
 
     public function updateStatus(int $id): void
     {
+<<<<<<< HEAD
         $status = trim((string) $this->input('status'));
         try {
             $this->bookingService->updateStatus($id, $status);
@@ -99,5 +111,10 @@ class BookingController extends Controller
 
             echo "Thanh toán thất bại";
         }
+=======
+        $status = $this->input('status');
+        $this->bookingModel->update($id, ['status' => $status]);
+        $this->redirect('/admin/bookings');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 }

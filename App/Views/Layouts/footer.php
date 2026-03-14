@@ -7,7 +7,11 @@
     <div class="container">
         <div class="footer-grid">
             <div class="footer-brand">
+<<<<<<< HEAD
                 <a href="<?= \App\Core\url('/') ?>" class="logo">
+=======
+                <a href="/" class="logo">
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                     <div class="logo-icon"><i class="fa-solid fa-hotel"></i></div>
                     <span>Booking Hotel</span>
                 </a>
@@ -26,10 +30,17 @@
             <div class="footer-col">
                 <h4 class="footer-title">Liên kết</h4>
                 <ul class="footer-links">
+<<<<<<< HEAD
                     <li><a href="<?= \App\Core\url('/') ?>">Trang chủ</a></li>
                     <li><a href="<?= \App\Core\url('/rooms') ?>">Danh sách phòng</a></li>
                     <li><a href="<?= \App\Core\url('/rooms/search') ?>">Tìm kiếm</a></li>
                     <li><a href="<?= \App\Core\url('/profile') ?>">Tài khoản</a></li>
+=======
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/rooms">Danh sách phòng</a></li>
+                    <li><a href="/rooms/search">Tìm kiếm</a></li>
+                    <li><a href="/profile">Tài khoản</a></li>
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                 </ul>
             </div>
 

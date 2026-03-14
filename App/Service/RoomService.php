@@ -121,11 +121,18 @@ class RoomService
                 FROM `bookings` b
                 JOIN `booking_details` bd ON b.id = bd.booking_id
                 WHERE b.status IN ($placeholders)
+<<<<<<< HEAD
                 AND b.check_in < ?
                 AND b.check_out > ?
             )
         ";
         $bind = array_merge($blockStatuses, [$check_out, $check_in]);
+=======
+                AND NOT (b.check_out <= ? OR b.check_in >= ?)
+            )
+        ";
+        $bind = array_merge($blockStatuses, [$check_in, $check_out]);
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
         if ($room_type_id !== null) {
             $sql .= " AND r.room_type_id = ?";
             $bind[] = $room_type_id;

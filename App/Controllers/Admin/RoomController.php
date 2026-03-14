@@ -79,7 +79,11 @@ class RoomController extends Controller
             }
         }
 
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/rooms'));
+=======
+        $this->redirect('/admin/rooms');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function edit(int $id): void
@@ -130,12 +134,20 @@ class RoomController extends Controller
             }
         }
 
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/rooms'));
+=======
+        $this->redirect('/admin/rooms');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function destroy(int $id): void
     {
         $this->roomModel->delete($id);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/rooms'));
+=======
+        $this->redirect('/admin/rooms');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 }

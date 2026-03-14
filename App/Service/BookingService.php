@@ -30,6 +30,7 @@ class BookingService
     }
 
 
+<<<<<<< HEAD
     /**
      * Kiểm tra overlap bằng SQL COUNT - O(1) database round-trip.
      * Overlap: start < new_end AND end > new_start (từ chối nếu count > 0).
@@ -64,6 +65,8 @@ class BookingService
     /**
      * Lấy danh sách overlapping bookings (dùng khi cần chi tiết).
      */
+=======
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     public function getOverlappingBookings(
         int $room_id,
         string $check_in,
@@ -79,8 +82,12 @@ class BookingService
             JOIN booking_details bd ON b.id = bd.booking_id
             WHERE bd.room_id = ?
             AND b.status IN ($placeholders)
+<<<<<<< HEAD
             AND b.check_in < ?
             AND b.check_out > ?
+=======
+            AND NOT (b.check_out <= ? OR b.check_in >= ?)
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
         ";
         if ($exclude_booking_id !== null) {
             $sql .= " AND b.id != ?";
@@ -88,7 +95,11 @@ class BookingService
         if ($forUpdate) {
             $sql .= " FOR UPDATE";
         }
+<<<<<<< HEAD
         $bind = array_merge([$room_id], $blockStatuses, [$check_out, $check_in]);
+=======
+        $bind = array_merge([$room_id], $blockStatuses, [$check_in, $check_out]);
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
         if ($exclude_booking_id !== null) {
             $bind[] = $exclude_booking_id;
         }
@@ -99,7 +110,12 @@ class BookingService
 
     public function isRoomAvailable(int $room_id, string $check_in, string $check_out, ?int $exclude_booking_id = null): bool
     {
+<<<<<<< HEAD
         return !$this->hasOverlappingBookings($room_id, $check_in, $check_out, $exclude_booking_id);
+=======
+        $overlaps = $this->getOverlappingBookings($room_id, $check_in, $check_out, $exclude_booking_id, false);
+        return empty($overlaps);
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     private function parseDateTimeInput(string $value): array
@@ -223,7 +239,12 @@ class BookingService
             }
 
 
+<<<<<<< HEAD
             if ($this->hasOverlappingBookings($room_id, $check_in, $check_out, null)) {
+=======
+            $overlaps = $this->getOverlappingBookings($room_id, $check_in, $check_out, null, false);
+            if (!empty($overlaps)) {
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                 $this->pdo->rollBack();
                 return ['success' => false, 'error' => 'unavailable'];
             }

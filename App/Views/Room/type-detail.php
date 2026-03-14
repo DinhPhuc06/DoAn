@@ -339,7 +339,11 @@ if (!empty($roomType['images'])) {
                 <span style="color: #666;">/ đêm</span>
             </div>
 
+<<<<<<< HEAD
             <form action="<?= \App\Core\url('rooms/search') ?>" method="GET" style="display: flex; flex-direction: column; gap: 15px;">
+=======
+            <form action="/rooms/search" method="GET" style="display: flex; flex-direction: column; gap: 15px;">
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                 <input type="hidden" name="room_type_id" value="<?= $roomType['id'] ?>">
 
                 <div class="form-group">

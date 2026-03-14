@@ -3,7 +3,11 @@
         <h2 class="admin-card-title">Chi Tiết Đặt Phòng #
             <?= $booking['id'] ?? '' ?>
         </h2>
+<<<<<<< HEAD
         <a href="<?= \App\Core\url('/admin/bookings') ?>" class="admin-btn admin-btn-outline">
+=======
+        <a href="/admin/bookings" class="admin-btn admin-btn-outline">
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
             <i class="fa-solid fa-arrow-left"></i> Quay lại
         </a>
     </div>

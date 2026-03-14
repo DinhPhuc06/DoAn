@@ -31,6 +31,7 @@ class AuthService
     }
 
     /** Login admin: hiện tại giống frontend (có thể mở rộng check role sau) */
+<<<<<<< HEAD
     public function attemptAdmin($email, $password)
     {
         $user = (new User())->findByEmail($email);
@@ -53,4 +54,11 @@ class AuthService
     }
 
 }  
+=======
+    public function attemptAdmin(string $email, string $password): ?array
+    {
+        return $this->attemptFrontend($email, $password);
+    }
+}
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
 

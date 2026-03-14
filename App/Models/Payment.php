@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 
 namespace App\Models;
@@ -38,3 +39,27 @@ class Payment extends Model
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
+=======
+<?php
+
+namespace App\Models;
+
+use App\Core\Model;
+
+/** Model Payment - Bảng payments. CRUD: getAll, findById, create, update, delete. */
+class Payment extends Model
+{
+    protected string $table = 'payments';
+
+    protected array $fillable = [
+        'booking_id',
+        'method',
+        'amount',
+        'status',
+        'paid_at',
+        'currency',
+        'result_code',
+        'message',
+    ];
+}
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3

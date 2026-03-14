@@ -1,7 +1,11 @@
 <div class="admin-card">
     <div class="admin-card-header">
         <h2 class="admin-card-title">Danh Sách Phòng</h2>
+<<<<<<< HEAD
         <a href="<?= \App\Core\url('/admin/rooms/create') ?>" class="admin-btn admin-btn-primary">
+=======
+        <a href="/admin/rooms/create" class="admin-btn admin-btn-primary">
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
             <i class="fa-solid fa-plus"></i> Thêm Mới
         </a>
     </div>
@@ -55,11 +59,19 @@
                             </td>
                             <td>
                                 <div class="action-btns">
+<<<<<<< HEAD
                                     <a href="<?= \App\Core\url('/admin/rooms/' . $room['id'] . '/edit') ?>" class="action-btn action-btn-edit"
                                         title="Sửa">
                                         <i class="fa-solid fa-pen"></i>
                                     </a>
                                     <form action="<?= \App\Core\url('/admin/rooms/' . $room['id'] . '/delete') ?>" method="POST" style="display: inline;"
+=======
+                                    <a href="/admin/rooms/<?= $room['id'] ?>/edit" class="action-btn action-btn-edit"
+                                        title="Sửa">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <form action="/admin/rooms/<?= $room['id'] ?>/delete" method="POST" style="display: inline;"
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                                         onsubmit="return confirm('Bạn có chắc muốn xóa?');">
                                         <button type="submit" class="action-btn action-btn-delete" title="Xóa">
                                             <i class="fa-solid fa-trash"></i>

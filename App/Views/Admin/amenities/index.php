@@ -1,7 +1,11 @@
 <div class="admin-card">
     <div class="admin-card-header">
         <h2 class="admin-card-title">Danh Sách Tiện Nghi</h2>
+<<<<<<< HEAD
         <a href="<?= \App\Core\url('/admin/amenities/create') ?>" class="admin-btn admin-btn-primary">
+=======
+        <a href="/admin/amenities/create" class="admin-btn admin-btn-primary">
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
             <i class="fa-solid fa-plus"></i> Thêm Mới
         </a>
     </div>
@@ -28,11 +32,19 @@
                             <td><i class="<?= htmlspecialchars($amenity['icon'] ?? 'fa-solid fa-check') ?>"></i></td>
                             <td>
                                 <div class="action-btns">
+<<<<<<< HEAD
                                     <a href="<?= \App\Core\url('/admin/amenities/' . $amenity['id'] . '/edit') ?>" class="action-btn action-btn-edit"
                                         title="Sửa">
                                         <i class="fa-solid fa-pen"></i>
                                     </a>
                                     <form action="<?= \App\Core\url('/admin/amenities/' . $amenity['id'] . '/delete') ?>" method="POST"
+=======
+                                    <a href="/admin/amenities/<?= $amenity['id'] ?>/edit" class="action-btn action-btn-edit"
+                                        title="Sửa">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <form action="/admin/amenities/<?= $amenity['id'] ?>/delete" method="POST"
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                                         style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
                                         <button type="submit" class="action-btn action-btn-delete" title="Xóa">
                                             <i class="fa-solid fa-trash"></i>

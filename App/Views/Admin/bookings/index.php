@@ -58,11 +58,19 @@
                             </td>
                             <td>
                                 <div class="action-btns">
+<<<<<<< HEAD
                                     <a href="<?= \App\Core\url('/admin/bookings/' . $booking['id']) ?>" class="action-btn action-btn-view"
                                         title="Xem chi tiết">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                     <form action="<?= \App\Core\url('/admin/bookings/' . $booking['id'] . '/status') ?>" method="POST"
+=======
+                                    <a href="/admin/bookings/<?= $booking['id'] ?>" class="action-btn action-btn-view"
+                                        title="Xem chi tiết">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <form action="/admin/bookings/<?= $booking['id'] ?>/status" method="POST"
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                                         style="display: inline;">
                                         <select name="status" onchange="this.form.submit()"
                                             style="padding: 5px; border-radius: 5px; border: 1px solid #ddd; font-size: 0.8rem;">
@@ -70,6 +78,11 @@
                                             </option>
                                             <option value="confirmed" <?= $status === 'confirmed' ? 'selected' : '' ?>>Xác nhận
                                             </option>
+<<<<<<< HEAD
+=======
+                                            <option value="completed" <?= $status === 'completed' ? 'selected' : '' ?>>Hoàn thành
+                                            </option>
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
                                             <option value="cancelled" <?= $status === 'cancelled' ? 'selected' : '' ?>>Hủy</option>
                                         </select>
                                     </form>

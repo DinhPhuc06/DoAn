@@ -46,7 +46,11 @@ class AmenityController extends Controller
     {
         $stmt = $this->pdo->prepare("INSERT INTO amenities (name, icon) VALUES (?, ?)");
         $stmt->execute([$this->input('name'), $this->input('icon')]);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/amenities'));
+=======
+        $this->redirect('/admin/amenities');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function edit(int $id): void
@@ -67,13 +71,21 @@ class AmenityController extends Controller
     {
         $stmt = $this->pdo->prepare("UPDATE amenities SET name = ?, icon = ? WHERE id = ?");
         $stmt->execute([$this->input('name'), $this->input('icon'), $id]);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/amenities'));
+=======
+        $this->redirect('/admin/amenities');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 
     public function destroy(int $id): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM amenities WHERE id = ?");
         $stmt->execute([$id]);
+<<<<<<< HEAD
         $this->redirect(\App\Core\url('/admin/amenities'));
+=======
+        $this->redirect('/admin/amenities');
+>>>>>>> 3765e4ac47ec4b4985a25b4abc601d651c2889a3
     }
 }
