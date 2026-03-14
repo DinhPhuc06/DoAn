@@ -1,0 +1,410 @@
+[2026-02-04 05:43:17] TypeError: App\Core\Router::matchRoute(): Argument #3 ($params) must be of type array, null given, called in /Users/admin/Project/Web/DoAn/App/Core/Router.php on line 68 in /Users/admin/Project/Web/DoAn/App/Core/Router.php:108
+Stack trace:
+#0 /Users/admin/Project/Web/DoAn/App/Core/Router.php(68): App\Core\Router::matchRoute('/', '/', NULL)
+#1 /Users/admin/Project/Web/DoAn/Public/index.php(100): App\Core\Router::dispatch()
+#2 {main}
+[2026-02-04 05:43:17] TypeError: App\Core\Router::matchRoute(): Argument #3 ($params) must be of type array, null given, called in /Users/admin/Project/Web/DoAn/App/Core/Router.php on line 68 in /Users/admin/Project/Web/DoAn/App/Core/Router.php:108
+Stack trace:
+#0 /Users/admin/Project/Web/DoAn/App/Core/Router.php(68): App\Core\Router::matchRoute('/', '/favicon.ico', NULL)
+#1 /Users/admin/Project/Web/DoAn/Public/index.php(100): App\Core\Router::dispatch()
+#2 {main}
+[2026-02-04 05:43:20] TypeError: App\Core\Router::matchRoute(): Argument #3 ($params) must be of type array, null given, called in /Users/admin/Project/Web/DoAn/App/Core/Router.php on line 68 in /Users/admin/Project/Web/DoAn/App/Core/Router.php:108
+Stack trace:
+#0 /Users/admin/Project/Web/DoAn/App/Core/Router.php(68): App\Core\Router::matchRoute('/', '/', NULL)
+#1 /Users/admin/Project/Web/DoAn/Public/index.php(100): App\Core\Router::dispatch()
+#2 {main}
+[2026-02-04 05:43:20] TypeError: App\Core\Router::matchRoute(): Argument #3 ($params) must be of type array, null given, called in /Users/admin/Project/Web/DoAn/App/Core/Router.php on line 68 in /Users/admin/Project/Web/DoAn/App/Core/Router.php:108
+Stack trace:
+#0 /Users/admin/Project/Web/DoAn/App/Core/Router.php(68): App\Core\Router::matchRoute('/', '/favicon.ico', NULL)
+#1 /Users/admin/Project/Web/DoAn/Public/index.php(100): App\Core\Router::dispatch()
+#2 {main}
+[2026-02-04 05:52:23] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [1049] Unknown database 'doan' in /Users/admin/Project/Web/DoAn/App/Core/Database.php:62
+Stack trace:
+#0 /Users/admin/Project/Web/DoAn/App/Core/Database.php(27): App\Core\Database->connect()
+#1 /Users/admin/Project/Web/DoAn/App/Core/Database.php(36): App\Core\Database->__construct()
+#2 /Users/admin/Project/Web/DoAn/App/Core/Model.php(27): App\Core\Database::getInstance()
+#3 /Users/admin/Project/Web/DoAn/App/Controllers/HomeController.php(20): App\Core\Model->__construct()
+#4 [internal function]: App\Controllers\HomeController->index()
+#5 /Users/admin/Project/Web/DoAn/App/Core/Router.php(94): call_user_func_array(Array, Array)
+#6 /Users/admin/Project/Web/DoAn/App/Core/Router.php(109): App\Core\Router::{closure:App\Core\Router::dispatch():84}()
+#7 /Users/admin/Project/Web/DoAn/Public/index.php(100): App\Core\Router::dispatch()
+#8 {main}
+[2026-02-04 05:52:26] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [1049] Unknown database 'doan' in /Users/admin/Project/Web/DoAn/App/Core/Database.php:62
+Stack trace:
+#0 /Users/admin/Project/Web/DoAn/App/Core/Database.php(27): App\Core\Database->connect()
+#1 /Users/admin/Project/Web/DoAn/App/Core/Database.php(36): App\Core\Database->__construct()
+#2 /Users/admin/Project/Web/DoAn/App/Core/Model.php(27): App\Core\Database::getInstance()
+#3 /Users/admin/Project/Web/DoAn/App/Controllers/HomeController.php(20): App\Core\Model->__construct()
+#4 [internal function]: App\Controllers\HomeController->index()
+#5 /Users/admin/Project/Web/DoAn/App/Core/Router.php(94): call_user_func_array(Array, Array)
+#6 /Users/admin/Project/Web/DoAn/App/Core/Router.php(109): App\Core\Router::{closure:App\Core\Router::dispatch():84}()
+#7 /Users/admin/Project/Web/DoAn/Public/index.php(100): App\Core\Router::dispatch()
+#8 {main}
+[2026-03-11 14:49:18] TypeError: App\Core\Router::get(): Argument #2 ($controller) must be of type string, Closure given, called in C:\xampp\htdocs\DoAn\Public\index.php on line 41 in C:\xampp\htdocs\DoAn\App\Core\Router.php:19
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\Public\index.php(41): App\Core\Router::get('/', Object(Closure))
+#1 {main}
+[2026-03-11 14:49:19] TypeError: App\Core\Router::get(): Argument #2 ($controller) must be of type string, Closure given, called in C:\xampp\htdocs\DoAn\Public\index.php on line 41 in C:\xampp\htdocs\DoAn\App\Core\Router.php:19
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\Public\index.php(41): App\Core\Router::get('/', Object(Closure))
+#1 {main}
+[2026-03-12 05:10:55] Error: Call to undefined method App\Models\User::findByEmail() in C:\xampp\htdocs\DoAn\App\Service\AuthService.php:26
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Service\AuthService->attemptFrontend('admin@bookingho...', 'yusin1904')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin@bookingho...', 'yusin1904')
+#2 [internal function]: App\Controllers\Admin\AuthController->login()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#5 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#6 {main}
+[2026-03-12 05:11:01] Error: Call to undefined method App\Models\User::findByEmail() in C:\xampp\htdocs\DoAn\App\Service\AuthService.php:26
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Service\AuthService->attemptFrontend('admin@bookingho...', 'admin@bookingho...')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin@bookingho...', 'admin@bookingho...')
+#2 [internal function]: App\Controllers\Admin\AuthController->login()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#5 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#6 {main}
+[2026-03-12 05:13:53] Error: Non-static method App\Core\Database::getConnection() cannot be called statically in C:\xampp\htdocs\DoAn\App\Models\User.php:23
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(26): App\Models\User::findByEmail('admin@bookingho...')
+#1 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Service\AuthService->attemptFrontend('admin@bookingho...', 'admin@bookingho...')
+#2 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin@bookingho...', 'admin@bookingho...')
+#3 [internal function]: App\Controllers\Admin\AuthController->login()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 05:13:55] Error: Non-static method App\Core\Database::getConnection() cannot be called statically in C:\xampp\htdocs\DoAn\App\Models\User.php:23
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(26): App\Models\User::findByEmail('admin@bookingho...')
+#1 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Service\AuthService->attemptFrontend('admin@bookingho...', 'admin@bookingho...')
+#2 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin@bookingho...', 'admin@bookingho...')
+#3 [internal function]: App\Controllers\Admin\AuthController->login()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 05:16:10] Error: Non-static method App\Core\Database::getConnection() cannot be called statically in C:\xampp\htdocs\DoAn\App\Models\User.php:23
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(26): App\Models\User::findByEmail('admin2@bookingh...')
+#1 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Service\AuthService->attemptFrontend('admin2@bookingh...', 'password')
+#2 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin2@bookingh...', 'password')
+#3 [internal function]: App\Controllers\Admin\AuthController->login()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 05:17:17] Error: Call to private App\Core\Database::__construct() from scope App\Models\User in C:\xampp\htdocs\DoAn\App\Models\User.php:23
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(26): App\Models\User::findByEmail('admin2@bookingh...')
+#1 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Service\AuthService->attemptFrontend('admin2@bookingh...', 'password')
+#2 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin2@bookingh...', 'password')
+#3 [internal function]: App\Controllers\Admin\AuthController->login()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 05:18:40] Error: Class "App\Models\PDO" not found in C:\xampp\htdocs\DoAn\App\Models\User.php:28
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(26): App\Models\User::findByEmail('admin2@bookingh...')
+#1 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Service\AuthService->attemptFrontend('admin2@bookingh...', 'password')
+#2 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin2@bookingh...', 'password')
+#3 [internal function]: App\Controllers\Admin\AuthController->login()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 05:41:57] ParseError: syntax error, unexpected identifier "var_dump", expecting "function" or "const" in C:\xampp\htdocs\DoAn\App\Service\AuthService.php:53
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): {closure}('App\\Service\\Aut...')
+#1 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#3 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#4 {main}
+[2026-03-12 05:43:50] ParseError: syntax error, unexpected identifier "var_dump", expecting "function" or "const" in C:\xampp\htdocs\DoAn\App\Service\AuthService.php:58
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): {closure}('App\\Service\\Aut...')
+#1 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#3 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#4 {main}
+[2026-03-12 05:43:53] ParseError: syntax error, unexpected identifier "var_dump", expecting "function" or "const" in C:\xampp\htdocs\DoAn\App\Service\AuthService.php:58
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): {closure}('App\\Service\\Aut...')
+#1 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#3 C:\xampp\htdocs\DoAn\Public\index.php(127): App\Core\Router::dispatch()
+#4 {main}
+[2026-03-12 06:01:57] PDOException: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in C:\xampp\htdocs\DoAn\App\Models\User.php:25
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Models\User.php(25): PDO->prepare('SELECT * FROM u...')
+#1 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Models\User::findByEmail('admin@bookingho...')
+#2 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin@bookingho...', 'password')
+#3 [internal function]: App\Controllers\Admin\AuthController->login()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 06:06:45] Error: Non-static method App\Models\User::findByEmail() cannot be called statically in C:\xampp\htdocs\DoAn\App\Service\AuthService.php:36
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin@bookingho...', 'password')
+#1 [internal function]: App\Controllers\Admin\AuthController->login()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:14:30] Error: Class "App\Models\PDO" not found in C:\xampp\htdocs\DoAn\App\Models\User.php:26
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(36): App\Models\User->findByEmail('admin@bookingho...')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(51): App\Service\AuthService->attemptAdmin('admin@bookingho...', 'password')
+#2 [internal function]: App\Controllers\Admin\AuthController->login()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#5 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#6 {main}
+[2026-03-12 06:15:35] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(16): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): App\Service\AuthService->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:18:25] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(16): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): App\Service\AuthService->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:18:26] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(16): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): App\Service\AuthService->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:18:27] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(16): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): App\Service\AuthService->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:18:27] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(16): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): App\Service\AuthService->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:18:29] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\AuthController.php(23): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\AuthController->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\GuestMiddleware.php(17): App\Core\Router::App\Core\{closure}()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(106): App\Core\GuestMiddleware->handle(Object(Closure))
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#5 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#6 {main}
+[2026-03-12 06:18:31] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\AuthController.php(23): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\AuthController->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\GuestMiddleware.php(17): App\Core\Router::App\Core\{closure}()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(106): App\Core\GuestMiddleware->handle(Object(Closure))
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#5 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#6 {main}
+[2026-03-12 06:18:39] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(16): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): App\Service\AuthService->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:18:49] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(16): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): App\Service\AuthService->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:18:51] ParseError: syntax error, unexpected token "class", expecting "," or ";" in C:\xampp\htdocs\DoAn\App\Models\User.php:8
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Service\AuthService.php(16): {closure}('App\\Models\\User')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\AuthController.php(21): App\Service\AuthService->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\AuthController->__construct()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(129): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 06:29:30] Error: Call to a member function get() on null in C:\xampp\htdocs\DoAn\Public\index.php:129
+Stack trace:
+#0 {main}
+[2026-03-12 09:26:27] Error: Call to undefined method App\Models\Booking::find() in C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php:137
+Stack trace:
+#0 [internal function]: App\Controllers\BookingController->payment()
+#1 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#3 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#4 {main}
+[2026-03-12 09:26:34] Error: Call to undefined method App\Models\Booking::find() in C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php:137
+Stack trace:
+#0 [internal function]: App\Controllers\BookingController->payment()
+#1 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#3 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#4 {main}
+[2026-03-12 09:35:07] ParseError: syntax error, unexpected double-quoted string "vnp_CurrCode", expecting "]" in C:\xampp\htdocs\DoAn\App\Service\VnpayService.php:29
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php(150): {closure}('App\\Service\\Vnp...')
+#1 [internal function]: App\Controllers\BookingController->vnpay()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 09:35:57] ParseError: syntax error, unexpected double-quoted string "vnp_CurrCode", expecting "]" in C:\xampp\htdocs\DoAn\App\Service\VnpayService.php:29
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php(150): {closure}('App\\Service\\Vnp...')
+#1 [internal function]: App\Controllers\BookingController->vnpay()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 09:35:59] ParseError: syntax error, unexpected double-quoted string "vnp_CurrCode", expecting "]" in C:\xampp\htdocs\DoAn\App\Service\VnpayService.php:29
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php(150): {closure}('App\\Service\\Vnp...')
+#1 [internal function]: App\Controllers\BookingController->vnpay()
+#2 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#4 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#5 {main}
+[2026-03-12 09:55:43] PDOException: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in C:\xampp\htdocs\DoAn\App\Models\Room.php:36
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Models\Room.php(36): PDO->query('\n            SE...')
+#1 C:\xampp\htdocs\DoAn\App\Controllers\Admin\RoomController.php(29): App\Models\Room->getAllWithType()
+#2 [internal function]: App\Controllers\Admin\RoomController->index()
+#3 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#4 C:\xampp\htdocs\DoAn\App\Core\AdminMiddleware.php(17): App\Core\Router::App\Core\{closure}()
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(106): App\Core\AdminMiddleware->handle(Object(Closure))
+#6 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#7 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#8 {main}
+[2026-03-12 09:55:48] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\Admin\BookingController.php(20): App\Core\Model->__construct()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\BookingController->__construct()
+#5 C:\xampp\htdocs\DoAn\App\Core\AdminMiddleware.php(17): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\App\Core\Router.php(106): App\Core\AdminMiddleware->handle(Object(Closure))
+#7 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#8 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#9 {main}
+[2026-03-12 09:55:52] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\Admin\BookingController.php(20): App\Core\Model->__construct()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\BookingController->__construct()
+#5 C:\xampp\htdocs\DoAn\App\Core\AdminMiddleware.php(17): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\App\Core\Router.php(106): App\Core\AdminMiddleware->handle(Object(Closure))
+#7 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#8 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#9 {main}
+[2026-03-12 09:57:44] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\Admin\BookingController.php(20): App\Core\Model->__construct()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\BookingController->__construct()
+#5 C:\xampp\htdocs\DoAn\App\Core\AdminMiddleware.php(17): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\App\Core\Router.php(106): App\Core\AdminMiddleware->handle(Object(Closure))
+#7 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#8 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#9 {main}
+[2026-03-12 09:57:48] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\Admin\RoomController.php(21): App\Core\Model->__construct()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\Admin\RoomController->__construct()
+#5 C:\xampp\htdocs\DoAn\App\Core\AdminMiddleware.php(17): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\App\Core\Router.php(106): App\Core\AdminMiddleware->handle(Object(Closure))
+#7 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#8 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#9 {main}
+[2026-03-12 09:57:52] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\HomeController.php(20): App\Core\Model->__construct()
+#4 [internal function]: App\Controllers\HomeController->index()
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#6 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#7 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#8 {main}
+[2026-03-12 10:00:33] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php(26): App\Core\Model->__construct()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\BookingController->__construct()
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 10:00:37] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php(26): App\Core\Model->__construct()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\BookingController->__construct()
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 10:00:41] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\HomeController.php(20): App\Core\Model->__construct()
+#4 [internal function]: App\Controllers\HomeController->index()
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(94): call_user_func_array(Array, Array)
+#6 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#7 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#8 {main}
+[2026-03-12 10:17:58] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php(26): App\Core\Model->__construct()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\BookingController->__construct()
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#7 {main}
+[2026-03-12 10:18:02] PDOException: Kết nối database thất bại: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it in C:\xampp\htdocs\DoAn\App\Core\Database.php:62
+Stack trace:
+#0 C:\xampp\htdocs\DoAn\App\Core\Database.php(27): App\Core\Database->connect()
+#1 C:\xampp\htdocs\DoAn\App\Core\Database.php(36): App\Core\Database->__construct()
+#2 C:\xampp\htdocs\DoAn\App\Core\Model.php(27): App\Core\Database::getInstance()
+#3 C:\xampp\htdocs\DoAn\App\Controllers\BookingController.php(26): App\Core\Model->__construct()
+#4 C:\xampp\htdocs\DoAn\App\Core\Router.php(89): App\Controllers\BookingController->__construct()
+#5 C:\xampp\htdocs\DoAn\App\Core\Router.php(109): App\Core\Router::App\Core\{closure}()
+#6 C:\xampp\htdocs\DoAn\Public\index.php(139): App\Core\Router::dispatch()
+#7 {main}

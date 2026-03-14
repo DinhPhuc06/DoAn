@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Service\VnpayService;
+use App\Core\Controller;
+use App\Core\Auth;
+use App\Core\AuthMiddleware;
+use App\Core\Session;
+use App\Models\Room;
+use App\Models\RoomType;
+use App\Service\BookingService;
+use function App\Core\url;
+
+class BookingController extends Controller
+{
+    private Room $roomModel;
+    private RoomType $roomTypeModel;
+    private BookingService $bookingService;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->viewPath = BASE_PATH . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Views';
+        $this->roomModel = new Room();
+        $this->roomTypeModel = new RoomType();
+        $this->bookingService = new BookingService();
+    }
+
+    public function form(): void
+    {
+        AuthMiddleware::requireAuth();
+
+        $roomId = (int) $this->input('room_id');
+        $checkIn = $this->input('check_in');
+        $checkOut = $this->input('check_out');
+
+        if (!$roomId) {
+            $this->redirect(url('/rooms/search'));
+            return;
+        }
+
+        $room = $this->roomModel->findById($roomId);
+        if (!$room) {
+            $this->redirect(url('/rooms/search'));
+            return;
+        }
+
+        $roomType = $this->roomTypeModel->findById($room['room_type_id'] ?? 0);
+
+        $serviceModel = new \App\Models\Service();
+        $addons = $serviceModel->getAddons();
+
+        $this->useLayout = false;
+        $this->render('Booking/form', [
+            'room' => $room,
+            'roomType' => $roomType,
+            'checkIn' => $checkIn,
+            'checkOut' => $checkOut,
+            'addons' => $addons,
+        ]);
+    }
+
+    public function store(): void
+    {
+        AuthMiddleware::requireAuth();
+
+        if (!$this->isPost()) {
+            $this->redirect(url('/rooms'));
+            return;
+        }
+
+        $userId = Auth::id();
+        if (!$userId) {
+            Session::flash('_intended', url('/booking/form?room_id=' . (int) $this->input('room_id') . '&check_in=' . $this->input('check_in') . '&check_out=' . $this->input('check_out')));
+            $this->redirect(url('/login'));
+            return;
+        }
+
+        $addonsInput = $_POST['addons'] ?? [];
+        $addons = [];
+        foreach ($addonsInput as $serviceId => $data) {
+            if (!empty($data['selected'])) {
+                $addons[] = [
+                    'service_id' => (int) $serviceId,
+                    'quantity' => max(1, (int) ($data['qty'] ?? 1)),
+                ];
+            }
+        }
+
+        $result = $this->bookingService->createBookingFromRequest([
+            'user_id' => $userId,
+            'room_id' => $this->input('room_id'),
+            'check_in' => $this->input('check_in'),
+            'check_out' => $this->input('check_out'),
+            'addons' => $addons,
+        ]);
+
+        if ($result['success']) {
+            $this->redirect(url('/booking/success?id=' . $result['booking_id']));
+            return;
+        }
+
+        $roomId = (int) $this->input('room_id');
+        $checkIn = $this->input('check_in');
+        $checkOut = $this->input('check_out');
+        $query = 'room_id=' . $roomId . '&error=' . $result['error'];
+        if ($checkIn && $checkOut) {
+            $query .= '&check_in=' . urlencode($checkIn) . '&check_out=' . urlencode($checkOut);
+        }
+        $this->redirect(url('/booking/form?' . $query));
+    }
+
+
+    public function success(): void
+    {
+        $bookingId = (int) $this->input('id');
+        $booking = $bookingId ? (new \App\Models\Booking())->findById($bookingId) : null;
+        $this->useLayout = false;
+        $this->render('Booking/success', [
+            'bookingId' => $bookingId,
+            'booking' => $booking,
+        ]);
+    }
+    //trang payment
+    public function payment()
+    {
+
+        $booking_id = $_GET['booking_id'];
+
+        $bookingModel = new \App\Models\Booking();
+
+        $booking = $bookingModel->find($booking_id);
+
+        require '../App/Views/payment/payment.php';
+
+    }
+    //gửi vnpay
+    public function vnpay()
+    {
+        $amount = 500000;
+        $orderId = time();
+
+        $url = VnpayService::createPayment($amount, $orderId);
+
+        header("Location: $url");
+        exit;
+    }
+    //vnpay trả về
+    public function vnpayReturn()
+    {
+        $success = false;
+
+        if (isset($_GET['vnp_ResponseCode']) && $_GET['vnp_ResponseCode'] == "00") {
+            $success = true;
+        }
+
+        require __DIR__ . '/../Views/payment/result.php';
+    }
+
+}
